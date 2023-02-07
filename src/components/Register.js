@@ -20,23 +20,32 @@ export default function Register() {
   return (
     <form
       onSubmit={regSubmitHandler}
-      className="container"
+      className="container text-center"
       style={{ maxWidth: 400 }}
     >
-      <input type="text" ref={nameRef} className="mb-4" label="Your name" />
+      <label htmlFor="nameinput" className="form-label">
+        Your Name
+      </label>
+      <input
+        type="text"
+        ref={nameRef}
+        className="form-control mb-3"
+        id="nameinput"
+      />
+      <label htmlFor="emailinput" className="form-label">
+        Email
+      </label>
       <input
         ref={emailRef}
-        className="mb-4"
+        className="form-control mb-3"
         type="email"
-        label="Email address"
+        id="emailinput"
       />
-      <input
-        ref={passwordRef}
-        className="mb-4"
-        type="password"
-        label="Password"
-      />
-      <button type="submit" className="mb-4">
+      <label htmlFor="passwordinput" className="form-label">
+        Password
+      </label>
+      <input ref={passwordRef} className="form-control mb-3" type="password" />
+      <button type="submit" className="btn btn-primary">
         Register
       </button>
     </form>
