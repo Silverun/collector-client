@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 const Navigation = () => {
   const [hamButton, setHamButton] = useState(true);
@@ -14,9 +15,9 @@ const Navigation = () => {
   return (
     <nav className="navbar navbar-expand-sm bg-body-tertiary">
       <div className="container-fluid">
-        <a className="navbar-brand" href="/">
+        <NavLink className="navbar-brand" to="/">
           Collector
-        </a>
+        </NavLink>
         <button
           onClick={hamburgerButtonToggler}
           className={hamButton ? "navbar-toggler" : "navbar-toggler collapsed"}
@@ -39,24 +40,45 @@ const Navigation = () => {
         >
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link" aria-current="page" href="/user/:id">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                aria-current="page"
+                to="/user/1"
+              >
                 My collections
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/register">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                to="/register"
+              >
                 Register
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/login">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                to="/login"
+              >
                 Login
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/admin">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                to="/admin"
+              >
                 Admin dashboard
-              </a>
+              </NavLink>
             </li>
           </ul>
           <form className="d-flex" role="search">
