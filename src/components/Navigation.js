@@ -39,8 +39,8 @@ const Navigation = () => {
         >
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link" aria-current="page" href="/">
-                Home
+              <a className="nav-link" aria-current="page" href="/user/:id">
+                My collections
               </a>
             </li>
             <li className="nav-item">
@@ -51,6 +51,11 @@ const Navigation = () => {
             <li className="nav-item">
               <a className="nav-link" href="/login">
                 Login
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/admin">
+                Admin dashboard
               </a>
             </li>
           </ul>
