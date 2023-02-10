@@ -16,7 +16,7 @@ const Navigation = () => {
     <nav className="navbar navbar-expand-sm bg-body-tertiary">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/">
-          Collector
+          CLTR
         </NavLink>
         <button
           onClick={hamburgerButtonToggler}

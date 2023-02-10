@@ -11,10 +11,16 @@ export default function Login() {
   const loginSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(config.backendServer + "/user/login", {
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
+      const result = await axios.post(
+        config.backendServer + "/user/login",
+        {
+          email: emailRef.current.value,
+          password: passwordRef.current.value,
+        },
+        config.axiosOpts
+      );
+
+      console.log(result.data);
     } catch (error) {
       setMessage(error.response.data);
       setTimeout(() => {
