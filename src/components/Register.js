@@ -1,8 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import { config } from "../config";
+import { redirect } from "react-router-dom";
 
 export default function Register() {
+  const [message, setMessage] = useState(null);
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -11,12 +13,30 @@ export default function Register() {
 
   const regSubmitHandler = async (e) => {
     e.preventDefault();
-    await axios.post(config.backendServer + "/user/register", {
-      username: nameRef.current.value,
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
-    });
+    await axios
+      .post(config.backendServer + "/user/register", {
+        username: nameRef.current.value,
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      })
+      .then((data) => {
+        console.log(data);
+        // redirect("/user/id");
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        setMessage(err.response.data);
+        setTimeout(() => {
+          setMessage(null);
+        }, 2000);
+      });
   };
+
+  const alert = (
+    <div className="alert alert-warning mt-3" role="alert">
+      {message}
+    </div>
+  );
 
   return (
     <form
@@ -49,6 +69,7 @@ export default function Register() {
       <button type="submit" className="btn btn-primary">
         Register
       </button>
+      {message ? alert : null}
     </form>
   );
 }
