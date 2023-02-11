@@ -21,6 +21,7 @@ export default function Login() {
       );
 
       console.log(result.data);
+      // set access token somewhere
     } catch (error) {
       setMessage(error.response.data);
       setTimeout(() => {
