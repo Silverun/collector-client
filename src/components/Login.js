@@ -1,26 +1,26 @@
-import React, { useRef, useState } from "react";
-import axios from "axios";
-import { config } from "../config";
+import React, { useContext, useRef, useState } from "react";
+import axios from "../api/axios";
+// import { config } from "../config";
 import { Link } from "react-router-dom";
+import AuthContext from "../context/AuthProvider";
 
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
+  const { setAuth } = useContext(AuthContext);
   const [message, setMessage] = useState(null);
 
   const loginSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      const result = await axios.post(
-        config.backendServer + "/user/login",
-        {
-          email: emailRef.current.value,
-          password: passwordRef.current.value,
-        },
-        config.axiosOpts
-      );
+      const result = await axios.post("/user/login", {
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      });
 
       console.log(result.data);
+      const { accessToken, role, id, username } = result.data;
+      setAuth({ accessToken, role, id, username });
       // set access token somewhere
     } catch (error) {
       setMessage(error.response.data);

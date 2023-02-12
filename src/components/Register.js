@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import axios from "axios";
-import { config } from "../config";
+import axios from "../api/axios";
+// import { config } from "../config";
 import { redirect } from "react-router-dom";
 
 export default function Register() {
@@ -14,7 +14,7 @@ export default function Register() {
   const regSubmitHandler = async (e) => {
     e.preventDefault();
     await axios
-      .post(config.backendServer + "/user/register", {
+      .post("/user/register", {
         username: nameRef.current.value,
         email: emailRef.current.value,
         password: passwordRef.current.value,
