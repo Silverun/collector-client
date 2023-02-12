@@ -23,11 +23,10 @@ export default function Login() {
       setAuth({ accessToken, role, id, username });
       // set access token somewhere
     } catch (error) {
-      setMessage(error.response.data);
+      setMessage(error.response?.data || error.message);
       setTimeout(() => {
         setMessage(null);
-      }, 2000);
-      console.log(error.response.data);
+      }, 3000);
     }
   };
 
