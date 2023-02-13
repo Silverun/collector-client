@@ -1,14 +1,18 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "../api/axios";
 // import { config } from "../config";
-import { Link } from "react-router-dom";
-import AuthContext from "../context/AuthProvider";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useAuth();
   const [message, setMessage] = useState(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const loginSubmitHandler = async (e) => {
     e.preventDefault();
@@ -21,7 +25,15 @@ export default function Login() {
       console.log(result.data);
       const { accessToken, role, id, username } = result.data;
       setAuth({ accessToken, role, id, username });
+
       // set access token somewhere
+      //let user go where they wanted to go before redirected to login
+      console.log(from + " from");
+      console.log(auth.id);
+      // Try use something else later FIX NEEDED
+      setTimeout(() => {
+        navigate(from, { replace: true });
+      }, 1000);
     } catch (error) {
       setMessage(error.response?.data || error.message);
       setTimeout(() => {

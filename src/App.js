@@ -10,15 +10,25 @@ import Home from "./components/Home";
 import Admin from "./components/Admin";
 import Collections from "./components/Collections";
 import Login from "./components/Login";
+import Missing from "./components/Missing";
+import RequireAuth from "./components/RequireAuth";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
+      {/* Public routes (not logged in) */}
       <Route index element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/user/1" element={<Collections />} />
+      {/* Protected routes */}
+      <Route element={<RequireAuth />}>
+        {/* Editor only routes */}
+        <Route path="/user/1" element={<Collections />} />
+        {/* Admin only routes */}
+        <Route path="/admin" element={<Admin />} />
+      </Route>
+      {/* no matches path */}
+      <Route path="*" element={<Missing />} />
     </Route>
   )
 );
