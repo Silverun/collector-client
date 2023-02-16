@@ -1,14 +1,29 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from "../api/axios";
+import useAuth from "../hooks/useAuth";
 
 const Navigation = () => {
   const [hamButton, setHamButton] = useState(true);
+  const navigate = useNavigate();
+  const { setAuth } = useAuth();
 
   const hamburgerButtonToggler = () => {
     if (hamButton === true) {
       setHamButton(false);
     } else {
       setHamButton(true);
+    }
+  };
+
+  const logoutButtonHandler = async () => {
+    try {
+      // const response = await axios.get("/user/logout");
+      setAuth({});
+      navigate("/login");
+      // console.log(response);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -93,6 +108,13 @@ const Navigation = () => {
             </button>
           </form>
         </div>
+        <button
+          onClick={logoutButtonHandler}
+          className="btn btn-outline-success"
+          type="button"
+        >
+          Logout
+        </button>
       </div>
     </nav>
   );

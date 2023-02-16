@@ -1,7 +1,8 @@
 import React from "react";
+import UsersList from "./UsersList";
 
 const Admin = () => {
-  return <div>Admin</div>;
+  return <UsersList />;
 };
 
 export default Admin;
