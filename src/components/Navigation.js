@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-// import axios from "../api/axios";
-// import useAuth from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import useLogout from "../hooks/useLogout";
+import logo from "../img/cltr_logo_100.png";
 
 const Navigation = () => {
   const [hamButton, setHamButton] = useState(true);
   const navigate = useNavigate();
   const logout = useLogout();
+  const { auth } = useAuth();
   // const { setAuth } = useAuth();
 
   const hamburgerButtonToggler = () => {
@@ -32,7 +33,12 @@ const Navigation = () => {
     <nav className="navbar navbar-expand-sm bg-body-tertiary">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/">
-          CLTR
+          <img
+            style={{ minHeight: 40, minWidth: 40 }}
+            className="img-fluid"
+            src={logo}
+            alt="col_logo"
+          />
         </NavLink>
         <button
           onClick={hamburgerButtonToggler}
@@ -54,28 +60,20 @@ const Navigation = () => {
           }
           id="navbarSupportedContent"
         >
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? "nav-link active" : "nav-link"
-                }
-                aria-current="page"
-                to="/user/1"
-              >
-                My collections
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? "nav-link active" : "nav-link"
-                }
-                to="/register"
-              >
-                Register
-              </NavLink>
-            </li>
+          <ul className="navbar-nav  me-auto mb-2 mb-lg-0">
+            {auth.role ? (
+              <li className="nav-item">
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                  aria-current="page"
+                  to="/user/1"
+                >
+                  My collections
+                </NavLink>
+              </li>
+            ) : null}
             <li className="nav-item">
               <NavLink
                 className={({ isActive }) =>
@@ -86,16 +84,18 @@ const Navigation = () => {
                 Login
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? "nav-link active" : "nav-link"
-                }
-                to="/admin"
-              >
-                Admin dashboard
-              </NavLink>
-            </li>
+            {auth.role === 2 ? (
+              <li className="nav-item">
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                  to="/admin"
+                >
+                  Admin dashboard
+                </NavLink>
+              </li>
+            ) : null}
           </ul>
           <form className="d-flex" role="search">
             <input
@@ -108,14 +108,17 @@ const Navigation = () => {
               Search
             </button>
           </form>
+
+          {auth.role ? (
+            <button
+              onClick={logoutButtonHandler}
+              className="btn btn-outline-success ms-2"
+              type="button"
+            >
+              Logout
+            </button>
+          ) : null}
         </div>
-        <button
-          onClick={logoutButtonHandler}
-          className="btn btn-outline-success"
-          type="button"
-        >
-          Logout
-        </button>
       </div>
     </nav>
   );

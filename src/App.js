@@ -15,10 +15,11 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* Public routes (not logged in) */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
         <Route element={<PersistLogin />}>
           <Route index element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* Editor + Admin routes */}
@@ -30,10 +31,10 @@ function App() {
           <Route element={<RequireAuth allowedRoles={[2]} />}>
             <Route path="/admin" element={<Admin />} />
           </Route>
-        </Route>
 
-        {/* no matches path */}
-        <Route path="*" element={<Missing />} />
+          {/* no matches path */}
+          <Route path="*" element={<Missing />} />
+        </Route>
       </Route>
     </Routes>
   );
