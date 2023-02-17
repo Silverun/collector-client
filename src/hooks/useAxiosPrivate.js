@@ -15,7 +15,9 @@ const useAxiosPrivate = () => {
           //if not setting it to one in state
           config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
         }
+
         console.log("Config from request: ", config);
+
         return config;
       },
       (error) => Promise.reject(error)
@@ -32,8 +34,9 @@ const useAxiosPrivate = () => {
         console.log("error response: ", error.response);
         const prevRequest = error?.config;
         console.log("PrevReq.sent before " + JSON.stringify(prevRequest.sent));
-        //Check one time that accessToken has expired and renew it
+
         if (error?.response?.status === 403 && !prevRequest?.sent) {
+          //Check one time that accessToken has expired and renew it
           prevRequest.sent = true;
           console.log("PrevReq.sent after ", prevRequest);
           const newAccessToken = await refreshToken();

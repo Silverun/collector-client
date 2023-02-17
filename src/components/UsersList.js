@@ -11,15 +11,17 @@ const UsersList = () => {
 
   useEffect(() => {
     let isMounted = true;
-
     console.log("Users list Mounted, isMounted: " + isMounted);
+
     const controller = new AbortController();
+    // console.log(controller.signal, "After new instance");
 
     const getUsers = async () => {
       try {
         const result = await axiosPrivate.get("/admin/users", {
           signal: controller.signal,
         });
+        // console.log(controller.signal, "inside fun");
         console.log("Result data from /admin/users ", result.data.users);
         console.log(isMounted + " isMounted before setUsers");
         isMounted && setUsers(result.data.users);
@@ -36,9 +38,12 @@ const UsersList = () => {
       //cancel any pending request when the component unmounts
       isMounted = false;
       // controller.abort();
+      // console.log(controller.signal);
+
       console.log("Users list Unmounted, isMounted: " + isMounted);
-      // effectRef.current = true;
     };
+
+    // effectRef.current = true;
   }, [axiosPrivate, navigate, location]);
 
   return (

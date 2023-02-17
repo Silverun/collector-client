@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "../api/axios";
-import useAuth from "../hooks/useAuth";
+// import axios from "../api/axios";
+// import useAuth from "../hooks/useAuth";
+import useLogout from "../hooks/useLogout";
 
 const Navigation = () => {
   const [hamButton, setHamButton] = useState(true);
   const navigate = useNavigate();
-  const { setAuth } = useAuth();
+  const logout = useLogout();
+  // const { setAuth } = useAuth();
 
   const hamburgerButtonToggler = () => {
     if (hamButton === true) {
@@ -18,8 +20,7 @@ const Navigation = () => {
 
   const logoutButtonHandler = async () => {
     try {
-      // const response = await axios.get("/user/logout");
-      setAuth({});
+      await logout();
       navigate("/login");
       // console.log(response);
     } catch (error) {

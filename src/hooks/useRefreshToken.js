@@ -11,9 +11,15 @@ const useRefreshToken = () => {
 
     setAuth((prev) => {
       console.log("Refreshing access token");
-      console.log("Prev state accToken" + prev.accessToken);
+      console.log("Prev state accToken " + prev.accessToken);
       console.log("New accToken " + result.data.accessToken);
-      return { ...prev, accessToken: result.data.accessToken };
+      return {
+        ...prev,
+        id: result.data.id,
+        username: result.data.username,
+        role: result.data.role,
+        accessToken: result.data.accessToken,
+      };
     });
 
     return result.data.accessToken;
