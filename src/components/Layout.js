@@ -6,7 +6,7 @@ const Layout = () => {
   return (
     <main>
       <Navigation />
-      <div className="vh-100 vw-100 d-flex align-items-center">
+      <div className="vh-100 vw-100 d-flex align-items-start my-3">
         <Outlet />
       </div>
     </main>

@@ -9,6 +9,7 @@ import Missing from "./components/Missing";
 import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
+import NewCollection from "./components/NewCollection";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           {/* Editor + Admin routes */}
           <Route element={<RequireAuth allowedRoles={[1, 2]} />}>
             <Route path="/user/1" element={<Collections />} />
+            <Route path="/collection/new" element={<NewCollection />} />
           </Route>
 
           {/* Admin only routes */}

@@ -30,7 +30,7 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-sm bg-body-tertiary">
+    <nav className="navbar navbar-expand-sm shadow-sm bg-body-tertiary">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/">
           <img
