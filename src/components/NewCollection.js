@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { FilePond, registerPlugin } from "react-filepond";
@@ -7,42 +7,62 @@ import FilePondPluginFileEncode from "filepond-plugin-file-encode";
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import axios from "axios";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
 // import { useDropzone } from "react-dropzone";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileEncode);
 
 const NewCollection = (props) => {
-  const [dropdownState, setDropdownState] = useState("Theme");
   const [files, setFiles] = useState();
+  const [dropdownState, setDropdownState] = useState("Theme");
+  const [extraFieldType, setExtraFieldType] = useState("");
+  const [extraFieldName, setExtraFieldName] = useState("");
+  const [extraFields, setExtraFields] = useState([]);
+
+  const createFieldHandler = () => {
+    console.log({ name: extraFieldName, type: extraFieldType });
+
+    const newField = { name: extraFieldName, type: extraFieldType };
+    setExtraFields((prev) => {
+      return [...prev, newField];
+    });
+  };
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("image", files.file);
+    console.log(extraFields);
 
-    try {
-      const response = await axios.post(
-        "https://api.imgbb.com/1/upload",
-        formData,
-        {
-          params: {
-            expiration: "600",
-            key: "a0039a07ef71946ce2aae03fef02d685",
-          },
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      console.log(response.data.data.url);
-    } catch (error) {
-      console.log(error);
+    if (files) {
+      const formData = new FormData();
+      formData.append("image", files.file);
+      try {
+        const response = await axios.post(
+          "https://api.imgbb.com/1/upload",
+          formData,
+          {
+            params: {
+              expiration: "600",
+              key: "a0039a07ef71946ce2aae03fef02d685",
+            },
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        console.log(response.data.data.url);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   return (
     <div className="container-lg text-center">
       <h5>Create new collection</h5>
-      <form onSubmit={formSubmitHandler}>
-        <div className="row">
+      <form className="container" onSubmit={formSubmitHandler}>
+        <div className="row ">
           <div className="col-sm-4">
             <FilePond
               allowFileEncode={true}
@@ -104,9 +124,48 @@ const NewCollection = (props) => {
                 </Dropdown.Item>
               </DropdownButton>
             </div>
+            {/* Extra fields */}
+            <div className="row">
+              <h6 className="text-start mb-3">Extra fields</h6>
+              <ListGroup className="mb-3">
+                {extraFields.map((field, i) => (
+                  <ListGroup.Item key={i + field.name}>
+                    {i + 1}) {field.name} - Type: {field.type}
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+
+              <InputGroup className="mb-3">
+                <Form.Control
+                  value={extraFieldName}
+                  onChange={(e) => {
+                    setExtraFieldName(e.target.value);
+                  }}
+                  placeholder="Field name"
+                  aria-label="Field type input"
+                />
+                <FloatingLabel controlId="floatingSelect" label="Field type">
+                  <Form.Select
+                    onChange={(e) => {
+                      setExtraFieldType(e.target.value);
+                    }}
+                    aria-label="Default select example"
+                  >
+                    <option value="String">String</option>
+                    <option value="Number">Number</option>
+                    <option value="Text">Text(markdown)</option>
+                    <option value="Date">Date</option>
+                    <option value="Checkbox">Checkbox</option>
+                  </Form.Select>
+                </FloatingLabel>
+                <Button onClick={createFieldHandler} variant="secondary">
+                  Add
+                </Button>
+              </InputGroup>
+            </div>
           </div>
         </div>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary mt-3">
           Create new collection
         </button>
       </form>
