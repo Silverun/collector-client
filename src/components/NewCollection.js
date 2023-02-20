@@ -12,6 +12,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
+import useAuth from "../hooks/useAuth";
 // import { useDropzone } from "react-dropzone";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileEncode);
@@ -22,6 +23,7 @@ const NewCollection = (props) => {
   const [extraFieldType, setExtraFieldType] = useState("text");
   const [extraFieldName, setExtraFieldName] = useState("");
   const [extraFields, setExtraFields] = useState([]);
+  const { auth } = useAuth();
   const nameRef = useRef();
   const descRef = useRef();
 
@@ -49,20 +51,31 @@ const NewCollection = (props) => {
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
-    const newCollectionData = {
-      image: files?.file,
-      name: nameRef.current.value,
-      description: descRef.current.value,
-      theme: theme,
-      extraFields: extraFields,
-    };
-    console.log(newCollectionData);
+    const formData = new FormData();
+    formData.append("image", files?.file);
+    formData.append("name", nameRef.current.value);
+    formData.append("description", descRef.current.value);
+    formData.append("theme", theme);
+    formData.append("extraFields", JSON.stringify(extraFields));
+    formData.append("authorId", auth.id);
+
+    console.log(formData.get("image"));
+    // const newCollectionData = {
+    //   image: files?.file,
+    //   name: nameRef.current.value,
+    //   description: descRef.current.value,
+    //   theme: theme,
+    //   extraFields: extraFields,
+    //   authorId: auth.id,
+    // };
+    // console.log(newCollectionData);
 
     try {
-      const response = await axiosPrivate.post(
-        "/collection/new",
-        newCollectionData
-      );
+      const response = await axiosPrivate.post("/collection/new", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log(response.data);
     } catch (error) {
       console.log(error);
