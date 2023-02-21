@@ -27,30 +27,34 @@ const NewCollection = (props) => {
   const nameRef = useRef();
   const descRef = useRef();
 
-  useEffect(() => {
-    console.log("Mounted");
-    return () => {
-      console.log("Unmounted");
-    };
-  }, []);
+  // useEffect(() => {
+  //   console.log("Mounted");
+  //   return () => {
+  //     console.log("Unmounted");
+  //   };
+  // }, []);
 
   const createFieldHandler = () => {
-    console.log({ name: extraFieldName, type: extraFieldType });
-
-    const newField = { name: extraFieldName, type: extraFieldType };
+    const newField = {
+      name: extraFieldName,
+      type: extraFieldType,
+      id: Math.random().toFixed(3) * 1000,
+    };
+    console.log(newField);
     setExtraFields((prev) => {
       return [...prev, newField];
     });
   };
-  // CONSIDER THIS VARIANT
-  // const extraFieldsVariant = [
-  //   { id: "string1", name: "", type: "" },
-  //   { id: "string2", name: "", type: "" },
-  //   { id: "string3", name: "", type: "" },
-  // ];
+
+  const deleteFieldHandler = (id) => {
+    const filteredExtraFields = extraFields.filter((field) => field.id !== id);
+    // console.log(filteredExtraFields);
+    setExtraFields(filteredExtraFields);
+  };
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
+    // console.log(extraFields);
     const formData = new FormData();
     formData.append("image", files?.file);
     formData.append("name", nameRef.current.value);
@@ -59,16 +63,7 @@ const NewCollection = (props) => {
     formData.append("extraFields", JSON.stringify(extraFields));
     formData.append("authorId", auth.id);
 
-    console.log(formData.get("image"));
-    // const newCollectionData = {
-    //   image: files?.file,
-    //   name: nameRef.current.value,
-    //   description: descRef.current.value,
-    //   theme: theme,
-    //   extraFields: extraFields,
-    //   authorId: auth.id,
-    // };
-    // console.log(newCollectionData);
+    // console.log(formData.get("image"));
 
     try {
       const response = await axiosPrivate.post("/collection/new", formData, {
@@ -90,9 +85,9 @@ const NewCollection = (props) => {
           <div className="col-sm-4">
             <FilePond
               allowFileEncode={true}
-              files={files}
-              onupdatefiles={(file) => setFiles(file[0])}
-              // storeAsFile={true}
+              onupdatefiles={(files) => {
+                return setFiles(files[0]);
+              }}
               credits={null}
               instantUpload={false}
               stylePanelLayout="compact"
@@ -127,7 +122,7 @@ const NewCollection = (props) => {
               {/* <DropdownButton
                 variant="secondary"
                 id="dropdown-basic-button"
-                title={theme}
+                title="Choose theme"
               >
                 <Dropdown.Item onClick={() => setTheme("Coins and Currency")}>
                   Coins and Currency
@@ -151,7 +146,7 @@ const NewCollection = (props) => {
                   setTheme(e.target.value);
                 }}
                 aria-label="Default select example"
-                defaultValue={theme}
+                // defaultValue={theme}
               >
                 <option>Choose theme</option>
                 <option value="Coins and Currency">Coins and Currency</option>
@@ -166,8 +161,25 @@ const NewCollection = (props) => {
               <h6 className="text-start mb-3">Extra fields</h6>
               <ListGroup className="mb-3">
                 {extraFields.map((field, i) => (
-                  <ListGroup.Item key={i + Math.random().toFixed(3) * 1000}>
-                    {i + 1}) Field name: {field.name} - type: {field.type}
+                  <ListGroup.Item key={field.id}>
+                    {i + 1}. {field.name} ({field.type})
+                    <Button
+                      onClick={() => deleteFieldHandler(field.id)}
+                      className="ms-2"
+                      variant="secondary"
+                      size="sm"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-trash3"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"></path>
+                      </svg>
+                    </Button>
                   </ListGroup.Item>
                 ))}
               </ListGroup>
