@@ -68,9 +68,9 @@ const Navigation = () => {
                     isActive ? "nav-link active" : "nav-link"
                   }
                   aria-current="page"
-                  to="/user/1"
+                  to={`/user/${auth.id}`}
                 >
-                  My collections
+                  {auth.username}'s collections
                 </NavLink>
               </li>
             ) : null}

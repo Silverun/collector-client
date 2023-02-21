@@ -10,8 +10,11 @@ import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import NewCollection from "./components/NewCollection";
+import useAuth from "./hooks/useAuth";
 
 function App() {
+  const { auth } = useAuth();
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -25,7 +28,7 @@ function App() {
 
           {/* Editor + Admin routes */}
           <Route element={<RequireAuth allowedRoles={[1, 2]} />}>
-            <Route path="/user/1" element={<Collections />} />
+            <Route path={`/user/:id`} element={<Collections />} />
             <Route path="/collection/new" element={<NewCollection />} />
           </Route>
 

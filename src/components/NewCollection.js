@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+// USE AXIOS PRIVATE HOOK INSTEAD OF REGULAR
 import { axiosPrivate } from "../api/axios";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileEncode from "filepond-plugin-file-encode";
@@ -13,7 +12,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import useAuth from "../hooks/useAuth";
-// import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileEncode);
 
@@ -26,13 +25,7 @@ const NewCollection = (props) => {
   const { auth } = useAuth();
   const nameRef = useRef();
   const descRef = useRef();
-
-  // useEffect(() => {
-  //   console.log("Mounted");
-  //   return () => {
-  //     console.log("Unmounted");
-  //   };
-  // }, []);
+  const navigate = useNavigate();
 
   const createFieldHandler = () => {
     const newField = {
@@ -48,7 +41,6 @@ const NewCollection = (props) => {
 
   const deleteFieldHandler = (id) => {
     const filteredExtraFields = extraFields.filter((field) => field.id !== id);
-    // console.log(filteredExtraFields);
     setExtraFields(filteredExtraFields);
   };
 
@@ -62,9 +54,7 @@ const NewCollection = (props) => {
     formData.append("theme", theme);
     formData.append("extraFields", JSON.stringify(extraFields));
     formData.append("authorId", auth.id);
-
     // console.log(formData.get("image"));
-
     try {
       const response = await axiosPrivate.post("/collection/new", formData, {
         headers: {
@@ -72,6 +62,7 @@ const NewCollection = (props) => {
         },
       });
       console.log(response.data);
+      navigate(`/user/${auth.id}`, { replace: true });
     } catch (error) {
       console.log(error);
     }
@@ -80,8 +71,8 @@ const NewCollection = (props) => {
   return (
     <div className="container-lg text-center">
       <h5>Create new collection</h5>
-      <form className="container" onSubmit={formSubmitHandler}>
-        <div className="row ">
+      <form className="container needs-validation" onSubmit={formSubmitHandler}>
+        <div className="row container">
           <div className="col-sm-4">
             <FilePond
               allowFileEncode={true}
@@ -95,12 +86,13 @@ const NewCollection = (props) => {
               labelIdle='Drag & Drop image here or <span class="filepond--label-action">Browse</span>'
             />
           </div>
-          <div className="col-md">
+          <div className="col-sm px-5 text-start">
             <div className="row my-3">
               <label htmlFor="collection_name" className="form-label">
                 Name
               </label>
               <input
+                required
                 ref={nameRef}
                 type="text"
                 className="form-control"
@@ -111,7 +103,8 @@ const NewCollection = (props) => {
               <label htmlFor="col_description" className="form-label">
                 Description
               </label>
-              <input
+              <textarea
+                required
                 ref={descRef}
                 type="text"
                 className="form-control"
@@ -142,13 +135,13 @@ const NewCollection = (props) => {
               </DropdownButton> */}
 
               <Form.Select
+                required
                 onChange={(e) => {
                   setTheme(e.target.value);
                 }}
                 aria-label="Default select example"
-                // defaultValue={theme}
               >
-                <option>Choose theme</option>
+                <option value="">Choose theme</option>
                 <option value="Coins and Currency">Coins and Currency</option>
                 <option value="Books">Books</option>
                 <option value="Alcohol">Alcohol</option>
