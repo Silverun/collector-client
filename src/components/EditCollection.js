@@ -12,29 +12,42 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import useAuth from "../hooks/useAuth";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Spinner from "react-bootstrap/Spinner";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileEncode);
 
-const NewCollection = (props) => {
+const EditCollection = () => {
+  const location = useLocation();
+  const oldCollection = location.state.collection;
+
   const [files, setFiles] = useState();
-  const [theme, setTheme] = useState();
+  const [theme, setTheme] = useState(oldCollection.theme);
   const [extraFieldType, setExtraFieldType] = useState("text");
   const [extraFieldName, setExtraFieldName] = useState("");
-  const [extraFields, setExtraFields] = useState([]);
+  const [extraFields, setExtraFields] = useState(
+    JSON.parse(oldCollection.extraFields)
+  );
   const [isLoading, setIsLoading] = useState(false);
   const { auth } = useAuth();
   const nameRef = useRef();
   const descRef = useRef();
+  const filepondRef = useRef();
   const navigate = useNavigate();
   const params = useParams();
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
-    console.log("params", params.id);
-  });
+    console.log("params", params);
+    console.log("location.state.collection", location.state.collection);
+    nameRef.current.value = oldCollection.name;
+    descRef.current.value = oldCollection.description;
+    console.log("PondRef ", filepondRef.current);
+    if (oldCollection.imageUrl !== "../img/cltr_logo_100.png") {
+      filepondRef.current.addFile(oldCollection.imageUrl);
+    }
+  }, []);
 
   const createFieldHandler = () => {
     const newField = {
@@ -64,17 +77,18 @@ const NewCollection = (props) => {
     formData.append("theme", theme);
     formData.append("extraFields", JSON.stringify(extraFields));
     // author id from params id instead of auth id (if admin creates collection)
-    formData.append("authorId", +params.id);
-    // console.log(formData.get("image"));
+    // ID IS A STRING into INT field CHECK !!!
+    formData.append("authorId", oldCollection.authorId);
+    formData.append("collectionId", oldCollection.id);
+    console.log(formData.get("image"));
     try {
-      const response = await axiosPrivate.post("/collection/new", formData, {
+      const response = await axiosPrivate.post("/collection/edit", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       console.log(response.data);
       setIsLoading(false);
-      //changed from auth.id
       navigate(`/user/${params.id}`, { replace: true });
     } catch (error) {
       setIsLoading(false);
@@ -82,17 +96,23 @@ const NewCollection = (props) => {
     }
   };
 
+  const imgUpdateHandler = (files) => {
+    console.log("onupdatefiles ran ", files);
+    // console.log(filepondRef.current);
+    setFiles(files[0]);
+  };
+
   return (
     <div className="container-lg text-center">
-      <h5>Create new collection</h5>
+      <h5>Edit collection</h5>
       <form className="container needs-validation" onSubmit={formSubmitHandler}>
         <div className="row container">
           <div className="col-sm-4">
             <FilePond
+              ref={filepondRef}
+              // files={oldCollection.imageUrl}
               allowFileEncode={true}
-              onupdatefiles={(files) => {
-                return setFiles(files[0]);
-              }}
+              onupdatefiles={imgUpdateHandler}
               credits={null}
               instantUpload={false}
               stylePanelLayout="compact"
@@ -126,28 +146,6 @@ const NewCollection = (props) => {
               />
             </div>
             <div className="row my-4">
-              {/* <DropdownButton
-                variant="secondary"
-                id="dropdown-basic-button"
-                title="Choose theme"
-              >
-                <Dropdown.Item onClick={() => setTheme("Coins and Currency")}>
-                  Coins and Currency
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTheme("Books")}>
-                  Books
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTheme("Alcohol")}>
-                  Alcohol
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTheme("Trading Cards")}>
-                  Trading Cards
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTheme("Classic Cars")}>
-                  Classic Cars
-                </Dropdown.Item>
-              </DropdownButton> */}
-
               <Form.Select
                 required
                 onChange={(e) => {
@@ -155,7 +153,10 @@ const NewCollection = (props) => {
                 }}
                 aria-label="Default select example"
               >
-                <option value="">Choose theme</option>
+                {/* <option value="">Choose theme</option> */}
+                <option value={oldCollection.theme}>
+                  {oldCollection.theme}
+                </option>
                 <option value="Coins and Currency">Coins and Currency</option>
                 <option value="Books">Books</option>
                 <option value="Alcohol">Alcohol</option>
@@ -225,7 +226,7 @@ const NewCollection = (props) => {
           <Spinner animation="border" />
         ) : (
           <button type="submit" className="btn btn-primary mt-3">
-            Create new collection
+            Save changes
           </button>
         )}
       </form>
@@ -233,4 +234,4 @@ const NewCollection = (props) => {
   );
 };
 
-export default NewCollection;
+export default EditCollection;

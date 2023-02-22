@@ -3,6 +3,7 @@ import logo from "../img/cltr_logo_100.png";
 import { useCallback, useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import ReactMarkdown from "react-markdown";
 
 const Collections = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -43,7 +44,9 @@ const Collections = () => {
   };
   const editCollectionHandler = (id) => {
     console.log(id);
-    navigate(`/user/${params.id}/editcollection}`);
+    navigate(`/user/${params.id}/collection/${id}/edit`, {
+      state: { collection: collections.find((col) => col.id === id) },
+    });
   };
 
   return (
@@ -98,7 +101,9 @@ const Collections = () => {
                   />
                 </td>
                 <td>{collection.name}</td>
-                <td>{collection.description}</td>
+                <td>
+                  <ReactMarkdown>{collection.description}</ReactMarkdown>
+                </td>
                 <td>{collection.theme}</td>
                 <td className="">
                   {/* edit collection button */}
