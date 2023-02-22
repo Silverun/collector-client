@@ -74,16 +74,18 @@ const Navigation = () => {
                 </NavLink>
               </li>
             ) : null}
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? "nav-link active" : "nav-link"
-                }
-                to="/login"
-              >
-                Login
-              </NavLink>
-            </li>
+            {auth.role ? null : (
+              <li className="nav-item">
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                  to="/login"
+                >
+                  Login
+                </NavLink>
+              </li>
+            )}
             {auth.role === 2 ? (
               <li className="nav-item">
                 <NavLink

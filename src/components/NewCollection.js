@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 // USE AXIOS PRIVATE HOOK INSTEAD OF REGULAR
-import { axiosPrivate } from "../api/axios";
+// import { axiosPrivate } from "../api/axios";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileEncode from "filepond-plugin-file-encode";
@@ -12,7 +12,8 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileEncode);
 
@@ -26,6 +27,12 @@ const NewCollection = (props) => {
   const nameRef = useRef();
   const descRef = useRef();
   const navigate = useNavigate();
+  const params = useParams();
+  const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+    console.log("params", +params.id);
+  });
 
   const createFieldHandler = () => {
     const newField = {
@@ -53,7 +60,8 @@ const NewCollection = (props) => {
     formData.append("description", descRef.current.value);
     formData.append("theme", theme);
     formData.append("extraFields", JSON.stringify(extraFields));
-    formData.append("authorId", auth.id);
+    // author id from params id instead of auth id (if admin creates collection)
+    formData.append("authorId", params.id);
     // console.log(formData.get("image"));
     try {
       const response = await axiosPrivate.post("/collection/new", formData, {

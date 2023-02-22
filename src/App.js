@@ -28,8 +28,8 @@ function App() {
 
           {/* Editor + Admin routes */}
           <Route element={<RequireAuth allowedRoles={[1, 2]} />}>
-            <Route path={`/user/:id`} element={<Collections />} />
-            <Route path="/collection/new" element={<NewCollection />} />
+            <Route path="/user/:id" element={<Collections />} />
+            <Route path="/user/:id/newcollection" element={<NewCollection />} />
           </Route>
 
           {/* Admin only routes */}

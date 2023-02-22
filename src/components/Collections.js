@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from "../img/cltr_logo_100.png";
 import { useCallback, useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
@@ -9,6 +9,7 @@ const Collections = () => {
   const { auth } = useAuth();
   const [collections, setCollections] = useState([]);
   const params = useParams();
+  const navigate = useNavigate();
 
   const getCollections = useCallback(async () => {
     try {
@@ -42,11 +43,16 @@ const Collections = () => {
   };
   const editCollectionHandler = (id) => {
     console.log(id);
+    navigate(`/user/${params.id}/editcollection}`);
   };
 
   return (
     <div className="container-lg">
-      <Link to={"/collection/new"} type="button" className="btn btn-secondary">
+      <Link
+        to={`/user/${params.id}/newcollection`}
+        type="button"
+        className="btn btn-secondary"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
