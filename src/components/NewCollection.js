@@ -46,6 +46,7 @@ const NewCollection = (props) => {
     setExtraFields((prev) => {
       return [...prev, newField];
     });
+    // console.log(extraFields);
   };
 
   const deleteFieldHandler = (id) => {

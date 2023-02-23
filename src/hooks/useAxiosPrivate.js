@@ -16,7 +16,7 @@ const useAxiosPrivate = () => {
           config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
         }
 
-        console.log("Config from request: ", config);
+        // console.log("Config from request: ", config);
 
         return config;
       },
