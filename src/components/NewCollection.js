@@ -42,7 +42,7 @@ const NewCollection = (props) => {
       type: extraFieldType,
       id: Math.random().toFixed(3) * 1000,
     };
-    console.log(newField);
+    // console.log(newField);
     setExtraFields((prev) => {
       return [...prev, newField];
     });

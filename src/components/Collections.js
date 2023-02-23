@@ -32,7 +32,8 @@ const Collections = () => {
     getCollections();
   }, [getCollections]);
 
-  const deleteCollectionHandler = async (id) => {
+  const deleteCollectionHandler = async (id, e) => {
+    e.stopPropagation();
     console.log(id);
     try {
       const response = await axiosPrivate.post("/collection/delete", { id });
@@ -42,11 +43,16 @@ const Collections = () => {
       console.log(error);
     }
   };
-  const editCollectionHandler = (id) => {
+  const editCollectionHandler = (id, e) => {
+    e.stopPropagation();
     console.log(id);
     navigate(`/user/${params.id}/collection/${id}/edit`, {
       state: { collection: collections.find((col) => col.id === id) },
     });
+  };
+
+  const openCollectionHandler = (col_id) => {
+    navigate(`/collection/${col_id}`);
   };
 
   return (
@@ -82,7 +88,13 @@ const Collections = () => {
         <tbody>
           {collections.map((collection) => {
             return (
-              <tr key={collection.id} className="align-middle">
+              <tr
+                onClick={() => {
+                  openCollectionHandler(collection.id);
+                }}
+                key={collection.id}
+                className="align-middle"
+              >
                 <td>
                   <img
                     style={{
@@ -108,7 +120,7 @@ const Collections = () => {
                 <td className="">
                   {/* edit collection button */}
                   <button
-                    onClick={() => editCollectionHandler(collection.id)}
+                    onClick={(e) => editCollectionHandler(collection.id, e)}
                     type="button"
                     className="btn btn-secondary"
                   >
@@ -131,7 +143,7 @@ const Collections = () => {
                 <td>
                   {/* delete collection button */}
                   <button
-                    onClick={() => deleteCollectionHandler(collection.id)}
+                    onClick={(e) => deleteCollectionHandler(collection.id, e)}
                     type="button"
                     className="btn btn-danger"
                   >

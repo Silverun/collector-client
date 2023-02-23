@@ -19,7 +19,8 @@
     "react-filepond": "^7.1.2",
     "react-markdown": "^8.0.5",
     "react-router-dom": "^6.8.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "react-tag-autocomplete": "^7.0.0-rc.4"
   },
   "scripts": {
     "start": "react-scripts start",
