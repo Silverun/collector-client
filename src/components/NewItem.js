@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Form from "react-bootstrap/Form";
@@ -8,9 +8,10 @@ import Row from "react-bootstrap/Row";
 import { ReactTags } from "react-tag-autocomplete";
 import "../styles/reactTag.css";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Tooltip from "react-bootstrap/Tooltip";
 
 const NewItem = () => {
-  const [validated, setValidated] = useState(false);
+  const [invalidTags, setInvalidTags] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [collection, setCollection] = useState({});
   const [selected, setSelected] = useState([]);
@@ -18,6 +19,9 @@ const NewItem = () => {
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const [extraFields, setExtraFields] = useState();
+  const itemNameRef = useRef();
+  const inputsRef = useRef();
+  const allFieldsRefs = [];
 
   const getSoloCollection = useCallback(async () => {
     try {
@@ -37,8 +41,8 @@ const NewItem = () => {
   }, [getSoloCollection]);
 
   useEffect(() => {
-    console.log(extraFields);
-  }, [extraFields]);
+    console.log(selected);
+  }, [selected]);
 
   const suggestions = [
     { value: 3, label: "Bananas" },
@@ -61,43 +65,48 @@ const NewItem = () => {
     [selected]
   );
 
-  const formSubmitHandler = (e) => {
+  const formSubmitHandler = async (e) => {
     e.preventDefault();
+
+    if (selected.length < 1) {
+      setInvalidTags(true);
+      console.log("Tags empty");
+      return;
+    } else {
+      setInvalidTags(false);
+    }
+
+    const extractedInputs = () => {
+      const result = allFieldsRefs.map((field) => {
+        return {
+          name: field.name,
+          type: field.type,
+          value: field.type !== "checkbox" ? field.value : field.checked,
+          id: field.id,
+        };
+      });
+      return result;
+    };
+
+    const formData = {
+      name: itemNameRef.current.value,
+      tags: selected,
+      fieldsData: extractedInputs(),
+      collectionId: collection.id,
+      authorId: collection.authorId,
+    };
+
+    try {
+      const response = await axiosPrivate.post("/item/new", formData);
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log(formData);
     console.log("submit");
   };
-
-  // const extraFieldsJsx = () => {
-  //   extraFields.map((field) => {
-  //     if (field.type === "markdown") {
-  //       return (
-  //         <Form.Group
-  //           className="mt-3"
-  //           key={field.id}
-  //           controlId="validationCustom07"
-  //         >
-  //           <Form.Label>{field.name}</Form.Label>
-  //           <Form.Control
-  //             as="textarea"
-  //             required
-  //             placeholder="Markdown is supported here!"
-  //             style={{ height: "100px" }}
-  //           />
-  //         </Form.Group>
-  //       );
-  //     } else {
-  //       return (
-  //         <Form.Group
-  //           className="mt-3"
-  //           key={field.id}
-  //           controlId="validationCustom01"
-  //         >
-  //           <Form.Label>{field.name}</Form.Label>
-  //           <Form.Control required type={field.type} />
-  //         </Form.Group>
-  //       );
-  //     }
-  //   });
-  // };
 
   return (
     <div className="container text-center">
@@ -106,7 +115,7 @@ const NewItem = () => {
         <Row className="sm-3 align-items-center">
           <Form.Group as={Col} md="4" controlId="validationCustom01">
             <Form.Label>Item name</Form.Label>
-            <Form.Control required type="text" />
+            <Form.Control ref={itemNameRef} required type="text" />
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
           </Form.Group>
           <Col md="6">
@@ -119,6 +128,8 @@ const NewItem = () => {
               onAdd={onAdd}
               onDelete={onDelete}
               noOptionsText="No matching tags"
+              isInvalid={invalidTags}
+              ariaErrorMessage="overlay-example"
             />
           </Col>
         </Row>
@@ -136,7 +147,10 @@ const NewItem = () => {
                   >
                     <Form.Label>{field.name}</Form.Label>
                     <Form.Control
+                      ref={(ref) => allFieldsRefs.push(ref)}
                       as="textarea"
+                      required
+                      name={field.name}
                       placeholder="Markdown is supported here!"
                       style={{ height: "100px" }}
                     />
@@ -145,21 +159,30 @@ const NewItem = () => {
               } else if (field.type === "checkbox") {
                 return (
                   <Form.Check
+                    ref={(ref) => allFieldsRefs.push(ref)}
+                    key={field.id}
                     className="text-start mt-3"
                     type={field.type}
                     id={field.id}
                     label={field.name}
+                    name={field.name}
                   />
                 );
               } else {
                 return (
                   <Form.Group
+                    itemRef={inputsRef}
                     className="mt-3"
                     key={field.id}
                     controlId={field.id}
                   >
                     <Form.Label>{field.name}</Form.Label>
-                    <Form.Control required type={field.type} />
+                    <Form.Control
+                      name={field.name}
+                      ref={(ref) => allFieldsRefs.push(ref)}
+                      required
+                      type={field.type}
+                    />
                   </Form.Group>
                 );
               }

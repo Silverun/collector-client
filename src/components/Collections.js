@@ -92,6 +92,7 @@ const Collections = () => {
                 onClick={() => {
                   openCollectionHandler(collection.id);
                 }}
+                role="button"
                 key={collection.id}
                 className="align-middle"
               >
