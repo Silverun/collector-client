@@ -90,8 +90,8 @@ const NewItem = () => {
 
     const formData = {
       name: itemNameRef.current.value,
-      tags: selected,
-      fieldsData: extractedInputs(),
+      tags: JSON.stringify(selected),
+      fieldsData: JSON.stringify(extractedInputs()),
       collectionId: collection.id,
       authorId: collection.authorId,
     };
