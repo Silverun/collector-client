@@ -14,6 +14,7 @@ import useAuth from "./hooks/useAuth";
 import EditCollection from "./components/EditCollection";
 import SoloCollection from "./components/SoloCollection";
 import NewItem from "./components/NewItem";
+import SoloItem from "./components/SoloItem";
 
 function App() {
   const { auth } = useAuth();
@@ -39,6 +40,7 @@ function App() {
               element={<EditCollection />}
             />
             <Route path="/collection/:col_id/newitem" element={<NewItem />} />
+            <Route path="/item/:item_id" element={<SoloItem />} />
           </Route>
 
           {/* Admin only routes */}

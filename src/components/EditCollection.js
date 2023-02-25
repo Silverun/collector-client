@@ -26,9 +26,8 @@ const EditCollection = () => {
   const [theme, setTheme] = useState(oldCollection.theme);
   const [extraFieldType, setExtraFieldType] = useState("text");
   const [extraFieldName, setExtraFieldName] = useState("");
-  const [extraFields, setExtraFields] = useState(
-    JSON.parse(oldCollection.extraFields)
-  );
+  // JSON parse was here
+  const [extraFields, setExtraFields] = useState(oldCollection.extraFields);
   const [isLoading, setIsLoading] = useState(false);
   const { auth } = useAuth();
   const nameRef = useRef();

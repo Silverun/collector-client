@@ -28,7 +28,8 @@ const NewItem = () => {
       const response = await axiosPrivate.get(`/collection/${params.col_id}`);
       if (!response.data) return navigate("/");
       setCollection(response.data);
-      setExtraFields(JSON.parse(response.data.extraFields));
+      //PARSE WAS HERE
+      setExtraFields(response.data.extraFields);
       setIsLoading(false);
     } catch (error) {
       console.log(error);
