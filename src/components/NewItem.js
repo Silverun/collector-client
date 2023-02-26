@@ -28,9 +28,11 @@ const NewItem = () => {
       const response = await axiosPrivate.get(`/collection/${params.col_id}`);
       if (!response.data) return navigate("/");
       setCollection(response.data);
+
       //PARSE WAS HERE
       setExtraFields(response.data.extraFields);
       setIsLoading(false);
+      console.log(extraFields);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -46,7 +48,7 @@ const NewItem = () => {
   }, [selected]);
 
   const suggestions = [
-    { value: 3, label: "Bananas" },
+    { label: "Bananas" },
     { value: 4, label: "Mangos" },
     { value: 5, label: "Lemons" },
     { value: 6, label: "Apricots", disabled: true },
@@ -107,11 +109,12 @@ const NewItem = () => {
 
     console.log(formData);
     console.log("submit");
+    navigate(`/collection/${collection.id}`, { replace: true });
   };
 
   return (
     <div className="container text-center">
-      <h5>Create new item</h5>
+      <h5 className="mb-3">Create new item for {collection.name}</h5>
       <Form onSubmit={formSubmitHandler}>
         <Row className="sm-3 align-items-center">
           <Form.Group as={Col} md="4" controlId="validationCustom01">

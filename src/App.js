@@ -15,6 +15,7 @@ import EditCollection from "./components/EditCollection";
 import SoloCollection from "./components/SoloCollection";
 import NewItem from "./components/NewItem";
 import SoloItem from "./components/SoloItem";
+import EditItem from "./components/EditItem";
 
 function App() {
   const { auth } = useAuth();
@@ -41,6 +42,7 @@ function App() {
             />
             <Route path="/collection/:col_id/newitem" element={<NewItem />} />
             <Route path="/item/:item_id" element={<SoloItem />} />
+            <Route path="/item/:item_id/edit" element={<EditItem />} />
           </Route>
 
           {/* Admin only routes */}
