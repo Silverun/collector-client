@@ -7,14 +7,12 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { ReactTags } from "react-tag-autocomplete";
 import "../styles/reactTag.css";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Tooltip from "react-bootstrap/Tooltip";
 
 const NewItem = () => {
   const [invalidTags, setInvalidTags] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [collection, setCollection] = useState({});
-  const [selected, setSelected] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const params = useParams();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
@@ -43,35 +41,32 @@ const NewItem = () => {
     getSoloCollection();
   }, [getSoloCollection]);
 
-  useEffect(() => {
-    console.log(selected);
-  }, [selected]);
-
-  const suggestions = [
+  const suggestTags = [
     { label: "Bananas" },
     { value: 4, label: "Mangos" },
     { value: 5, label: "Lemons" },
     { value: 6, label: "Apricots", disabled: true },
   ];
 
-  const onAdd = useCallback(
+  const onAddTag = useCallback(
     (newTag) => {
-      setSelected([...selected, newTag]);
+      console.log(newTag);
+      return setSelectedTags([...selectedTags, newTag]);
     },
-    [selected]
+    [selectedTags]
   );
 
-  const onDelete = useCallback(
+  const onDeleteTag = useCallback(
     (tagIndex) => {
-      setSelected(selected.filter((_, i) => i !== tagIndex));
+      setSelectedTags(selectedTags.filter((_, i) => i !== tagIndex));
     },
-    [selected]
+    [selectedTags]
   );
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
 
-    if (selected.length < 1) {
+    if (selectedTags.length < 1) {
       setInvalidTags(true);
       console.log("Tags empty");
       return;
@@ -93,15 +88,23 @@ const NewItem = () => {
 
     const formData = {
       name: itemNameRef.current.value,
-      tags: JSON.stringify(selected),
+      tags: JSON.stringify(selectedTags),
       fieldsData: JSON.stringify(extractedInputs()),
       collectionId: collection.id,
       authorId: collection.authorId,
     };
 
+    // send tags to DB
+    const createTags = async () => {
+      try {
+        const response = await axiosPrivate.post("/item/newtag");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     try {
       const response = await axiosPrivate.post("/item/new", formData);
-
       console.log(response.data);
     } catch (error) {
       console.log(error);
@@ -114,23 +117,22 @@ const NewItem = () => {
 
   return (
     <div className="container text-center">
-      <h5 className="mb-3">Create new item for {collection.name}</h5>
+      <h5 className="mb-3">New item for {collection.name}</h5>
       <Form onSubmit={formSubmitHandler}>
         <Row className="sm-3 align-items-center">
           <Form.Group as={Col} md="4" controlId="validationCustom01">
             <Form.Label>Item name</Form.Label>
             <Form.Control ref={itemNameRef} required type="text" />
-            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
           </Form.Group>
           <Col md="6">
             <Form.Label>Choose item tags</Form.Label>
             <ReactTags
               allowNew={true}
               labelText="Add item tags"
-              selected={selected}
-              suggestions={suggestions}
-              onAdd={onAdd}
-              onDelete={onDelete}
+              selected={selectedTags}
+              suggestions={suggestTags}
+              onAdd={onAddTag}
+              onDelete={onDeleteTag}
               noOptionsText="No matching tags"
               isInvalid={invalidTags}
               ariaErrorMessage="overlay-example"
