@@ -13,6 +13,7 @@ const NewItem = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [collection, setCollection] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
+  const [tagSuggest, setTagSuggest] = useState();
   const params = useParams();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
@@ -26,32 +27,81 @@ const NewItem = () => {
       const response = await axiosPrivate.get(`/collection/${params.col_id}`);
       if (!response.data) return navigate("/");
       setCollection(response.data);
-
-      //PARSE WAS HERE
       setExtraFields(response.data.extraFields);
-      setIsLoading(false);
-      console.log(extraFields);
+      console.log("response.data.extraFields", response.data.extraFields);
     } catch (error) {
       console.log(error);
-      setIsLoading(false);
     }
   }, [params.col_id, navigate, axiosPrivate]);
 
-  useEffect(() => {
-    getSoloCollection();
-  }, [getSoloCollection]);
+  const getAllTags = useCallback(async () => {
+    try {
+      let allTags = [];
+      const response = await axiosPrivate.get("/item/tags");
+      console.log("getAllTags", response.data);
 
-  const suggestTags = [
-    { label: "Bananas" },
-    { value: 4, label: "Mangos" },
-    { value: 5, label: "Lemons" },
-    { value: 6, label: "Apricots", disabled: true },
-  ];
+      response.data.forEach((item) => {
+        item.tags.forEach((tag) => {
+          console.log(tag);
+          allTags.push(tag);
+        });
+      });
+      console.log("tags", allTags);
+
+      const key = "label";
+
+      const uniqueTags = [
+        ...new Map(allTags.map((tag) => [tag[key], tag])).values(),
+      ];
+
+      console.log("unique tags", uniqueTags);
+      return uniqueTags;
+    } catch (error) {
+      console.log(error);
+    }
+  }, [axiosPrivate]);
+
+  const getData = useCallback(async () => {
+    try {
+      await getSoloCollection();
+      setTagSuggest(await getAllTags());
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [getSoloCollection, getAllTags]);
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
+
+  // const suggestTags = [
+  //   { label: "Bananas" },
+  //   { value: 4, label: "Mangos" },
+  //   { value: 5, label: "Lemons" },
+  //   { value: 6, label: "Apricots", disabled: true },
+  // ];
 
   const onAddTag = useCallback(
     (newTag) => {
-      console.log(newTag);
-      return setSelectedTags([...selectedTags, newTag]);
+      const formattedTag = {
+        value:
+          newTag.value
+            .replaceAll(" ", "")
+            .toLowerCase()
+            .charAt(0)
+            .toUpperCase() +
+          newTag.value.replaceAll(" ", "").toLowerCase().substring(1),
+        label:
+          newTag.label
+            .replaceAll(" ", "")
+            .toLowerCase()
+            .charAt(0)
+            .toUpperCase() +
+          newTag.label.replaceAll(" ", "").toLowerCase().substring(1),
+      };
+      console.log(formattedTag);
+      return setSelectedTags([...selectedTags, formattedTag]);
     },
     [selectedTags]
   );
@@ -95,13 +145,15 @@ const NewItem = () => {
     };
 
     // send tags to DB
-    const createTags = async () => {
-      try {
-        const response = await axiosPrivate.post("/item/newtag");
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    // const sendTags = async () => {
+    //   const tagsData = JSON.stringify(selectedTags);
+
+    //   try {
+    //     const response = await axiosPrivate.post("/item/newtag", tagsData);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
 
     try {
       const response = await axiosPrivate.post("/item/new", formData);
@@ -114,6 +166,8 @@ const NewItem = () => {
     console.log("submit");
     navigate(`/collection/${collection.id}`, { replace: true });
   };
+
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <div className="container text-center">
@@ -130,7 +184,7 @@ const NewItem = () => {
               allowNew={true}
               labelText="Add item tags"
               selected={selectedTags}
-              suggestions={suggestTags}
+              suggestions={tagSuggest}
               onAdd={onAddTag}
               onDelete={onDeleteTag}
               noOptionsText="No matching tags"
