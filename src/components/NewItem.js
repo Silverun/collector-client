@@ -144,17 +144,6 @@ const NewItem = () => {
       authorId: collection.authorId,
     };
 
-    // send tags to DB
-    // const sendTags = async () => {
-    //   const tagsData = JSON.stringify(selectedTags);
-
-    //   try {
-    //     const response = await axiosPrivate.post("/item/newtag", tagsData);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-
     try {
       const response = await axiosPrivate.post("/item/new", formData);
       console.log(response.data);

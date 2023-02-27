@@ -66,9 +66,9 @@ const SoloCollection = () => {
 
       setCollection(response.data);
       console.log("set collection", response.data);
-
+      // changed here from collectiuon
       setNoMarkdownFields(
-        collection.extraFields.filter((field) => field.type !== "markdown")
+        response.data.extraFields.filter((field) => field.type !== "markdown")
       );
 
       setFilters(() => {
@@ -134,7 +134,11 @@ const SoloCollection = () => {
           rounded
           outlined
           className="me-3"
-          onClick={() => navigate(`/item/${rowData.id}/edit`)}
+          onClick={() =>
+            navigate(`/item/${rowData.id}/edit`, {
+              state: { from: collection.id },
+            })
+          }
         />
         <Button
           icon="pi pi-trash"
