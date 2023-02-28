@@ -31,6 +31,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/collection/:col_id" element={<SoloCollection />} />
+          <Route path="/item/:item_id" element={<SoloItem />} />
 
           {/* Editor + Admin routes */}
           <Route element={<RequireAuth allowedRoles={[1, 2]} />}>
@@ -41,7 +42,7 @@ function App() {
               element={<EditCollection />}
             />
             <Route path="/collection/:col_id/newitem" element={<NewItem />} />
-            <Route path="/item/:item_id" element={<SoloItem />} />
+
             <Route path="/item/:item_id/edit" element={<EditItem />} />
           </Route>
 
