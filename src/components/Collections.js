@@ -25,10 +25,6 @@ const Collections = () => {
   }, [axiosPrivate, params]);
 
   useEffect(() => {
-    console.log(params);
-  }, [params]);
-
-  useEffect(() => {
     getCollections();
   }, [getCollections]);
 
