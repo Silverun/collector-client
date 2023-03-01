@@ -14,9 +14,7 @@ const Collections = () => {
 
   const getCollections = useCallback(async () => {
     try {
-      // SO that admin can navigate to another user page more testing required .....
       const response = await axiosPrivate.get(`/user/${params.id}`);
-      // const response = await axiosPrivate.get(`/user/${auth.id}`);
       console.log(response.data.result);
       setCollections(response.data.result);
     } catch (error) {
@@ -30,11 +28,11 @@ const Collections = () => {
 
   const deleteCollectionHandler = async (id, e) => {
     e.stopPropagation();
-    console.log(id);
+    // console.log(id);
     try {
       const response = await axiosPrivate.post("/collection/delete", { id });
       getCollections();
-      console.log(response.data);
+      console.log("response delete", response.data);
     } catch (error) {
       console.log(error);
     }

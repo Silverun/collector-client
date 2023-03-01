@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import axios from "../api/axios";
+import axios, { axiosPrivate } from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
@@ -122,6 +122,15 @@ const SoloCollection = () => {
     navigate(`/item/${data.id}`);
   };
 
+  const deleteItemHandler = async (id) => {
+    try {
+      await axiosPrivate.post(`/item/${id}/delete`);
+      await getCollectionItems();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const exportCSV = (selectionOnly) => {
     dataTableRef.current.exportCSV({ selectionOnly });
   };
@@ -144,7 +153,7 @@ const SoloCollection = () => {
           icon="pi pi-trash"
           rounded
           severity="danger"
-          onClick={() => console.log(rowData)}
+          onClick={() => deleteItemHandler(rowData.id)}
         />
       </div>
     );

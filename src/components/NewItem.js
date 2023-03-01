@@ -75,13 +75,6 @@ const NewItem = () => {
     getData();
   }, [getData]);
 
-  // const suggestTags = [
-  //   { label: "Bananas" },
-  //   { value: 4, label: "Mangos" },
-  //   { value: 5, label: "Lemons" },
-  //   { value: 6, label: "Apricots", disabled: true },
-  // ];
-
   const onAddTag = useCallback(
     (newTag) => {
       const formattedTag = {
