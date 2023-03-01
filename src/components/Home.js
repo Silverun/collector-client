@@ -5,9 +5,9 @@ const Home = () => {
   const [collections, setCollections] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getAllCollections = useCallback(async () => {
+  const getSortedCollections = useCallback(async () => {
     try {
-      const response = await axios.get(`/collection/getall`);
+      const response = await axios.get(`/collection/getsorted`);
       console.log(response.data);
       setCollections(response.data);
     } catch (error) {
@@ -16,7 +16,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    getAllCollections();
+    getSortedCollections();
   }, []);
 
   if (isLoading) {

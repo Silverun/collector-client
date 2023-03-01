@@ -37,7 +37,7 @@ const NewItem = () => {
   const getAllTags = useCallback(async () => {
     try {
       let allTags = [];
-      const response = await axiosPrivate.get("/item/tags");
+      const response = await axiosPrivate.get("/item/getall");
       console.log("getAllTags", response.data);
 
       response.data.forEach((item) => {
