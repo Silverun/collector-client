@@ -204,7 +204,7 @@ const SoloCollection = () => {
 
   return (
     <div className="container">
-      <div className="row align-items-center">
+      <div className="row gap-2 align-items-center">
         <div className="col-1">
           <img
             style={{ maxHeight: 80, maxWidth: 80 }}
@@ -212,7 +212,7 @@ const SoloCollection = () => {
             alt="col_img"
           />
         </div>
-        <div className="col text-start">
+        <div className="col me-3 text-start">
           <h5>{collection.name}</h5>
         </div>
       </div>
