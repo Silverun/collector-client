@@ -42,8 +42,6 @@ const UsersList = () => {
 
       console.log("Users list Unmounted, isMounted: " + isMounted);
     };
-
-    // effectRef.current = true;
   }, [axiosPrivate, navigate, location]);
 
   return (

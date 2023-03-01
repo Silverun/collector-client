@@ -7,7 +7,6 @@ import "../styles/reactCloud.css";
 import { Tag } from "primereact/tag";
 import MiniSearch from "minisearch";
 import { Sidebar } from "primereact/sidebar";
-import { Button } from "primereact/button";
 
 const Home = () => {
   const [collections, setCollections] = useState([]);
