@@ -15,7 +15,7 @@ const Admin = () => {
 
   const getUsers = useCallback(async () => {
     const response = await axiosPrivate.get("admin/users");
-    console.log("Users", response.data);
+    // console.log("Users", response.data);
     setUsers(response.data);
   }, [axiosPrivate]);
 
@@ -23,7 +23,7 @@ const Admin = () => {
     getUsers();
   }, []);
 
-  const deleteUserHandler = async () => {
+  const deleteUserHandler = useCallback(async () => {
     const usersIds = selected.map((user) => user.id);
     try {
       await axiosPrivate.post("/admin/delete", usersIds);
@@ -31,7 +31,8 @@ const Admin = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [axiosPrivate, getUsers, selected]);
+
   const promoteUserHandler = useCallback(async () => {
     const usersIds = selected.map((user) => user.id);
     try {
@@ -52,14 +53,41 @@ const Admin = () => {
     }
   }, [selected, getUsers, axiosPrivate]);
 
+  const blockUserHandler = useCallback(async () => {
+    const usersIds = selected.map((user) => user.id);
+    try {
+      await axiosPrivate.post("/admin/block", usersIds);
+      await getUsers();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [selected, getUsers, axiosPrivate]);
+
+  const unblockUserHandler = useCallback(async () => {
+    const usersIds = selected.map((user) => user.id);
+    try {
+      await axiosPrivate.post("/admin/unblock", usersIds);
+      await getUsers();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [selected, getUsers, axiosPrivate]);
+
   const leftToolbarTemplate = () => {
     return (
       <div className="d-flex flex-wrap gap-2">
         <Button
           label="Block"
           icon="pi pi-ban"
+          severity="warning"
+          onClick={blockUserHandler}
+          disabled={!selected || !selected.length}
+        />
+        <Button
+          label="Unblock"
+          icon="pi pi-lock-open"
           severity="success"
-          onClick={() => {}}
+          onClick={unblockUserHandler}
           disabled={!selected || !selected.length}
         />
         <Button
@@ -123,7 +151,7 @@ const Admin = () => {
           header="Role"
           body={(rowData) => (rowData.userRole === 1 ? "Editor" : "Admin")}
         ></Column>
-        <Column field="status" header="Status"></Column>
+        <Column field="userStatus" header="Status"></Column>
       </DataTable>
     </div>
   );

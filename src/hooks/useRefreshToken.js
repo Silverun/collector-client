@@ -4,11 +4,22 @@ import useAuth from "./useAuth";
 const useRefreshToken = () => {
   const { setAuth } = useAuth();
 
+  // const checkBlock = useCallback(async () => {
+  //   const response = await axios.post("/user/checkblocked", auth);
+  //   const status = response.data;
+  //   if (status === "active") return;
+  //   if (status === "blocked") {
+  //     console.log("Blocked");
+  //     await logout();
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   checkBlock();
+  // }, []);
+
   const refreshToken = async () => {
     const result = await axios.get("/refresh");
-    // we are getting res.json({access token})
-    // console.log("Result from refToken() " + JSON.stringify(result));
-
     setAuth((prev) => {
       console.log("Refreshing access token");
       console.log("Prev state accToken " + prev.accessToken);

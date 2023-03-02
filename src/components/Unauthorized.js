@@ -6,7 +6,7 @@ const Unauthorized = () => {
   const goBackHandler = () => navigate(-1);
 
   return (
-    <div className="container text-center">
+    <div className="container text-center mt-5">
       <div className="modal-dialog modal-lg mb-3">
         You do not have permissions to view this page.
       </div>

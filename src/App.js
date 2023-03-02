@@ -16,6 +16,7 @@ import SoloCollection from "./components/SoloCollection";
 import NewItem from "./components/NewItem";
 import SoloItem from "./components/SoloItem";
 import EditItem from "./components/EditItem";
+import CheckStatus from "./components/CheckStatus";
 
 function App() {
   const { auth } = useAuth();
@@ -32,25 +33,28 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/collection/:col_id" element={<SoloCollection />} />
           <Route path="/item/:item_id" element={<SoloItem />} />
+          <Route element={<CheckStatus />}>
+            {/* Editor + Admin routes */}
+            <Route element={<RequireAuth allowedRoles={[1, 2]} />}>
+              <Route path="/user/:id" element={<Collections />} />
+              <Route
+                path="/user/:id/newcollection"
+                element={<NewCollection />}
+              />
+              <Route
+                path="/user/:id/collection/:col_id/edit"
+                element={<EditCollection />}
+              />
+              <Route path="/collection/:col_id/newitem" element={<NewItem />} />
 
-          {/* Editor + Admin routes */}
-          <Route element={<RequireAuth allowedRoles={[1, 2]} />}>
-            <Route path="/user/:id" element={<Collections />} />
-            <Route path="/user/:id/newcollection" element={<NewCollection />} />
-            <Route
-              path="/user/:id/collection/:col_id/edit"
-              element={<EditCollection />}
-            />
-            <Route path="/collection/:col_id/newitem" element={<NewItem />} />
+              <Route path="/item/:item_id/edit" element={<EditItem />} />
+            </Route>
 
-            <Route path="/item/:item_id/edit" element={<EditItem />} />
+            {/* Admin only routes */}
+            <Route element={<RequireAuth allowedRoles={[2]} />}>
+              <Route path="/admin" element={<Admin />} />
+            </Route>
           </Route>
-
-          {/* Admin only routes */}
-          <Route element={<RequireAuth allowedRoles={[2]} />}>
-            <Route path="/admin" element={<Admin />} />
-          </Route>
-
           {/* no matches path */}
           <Route path="*" element={<Missing />} />
         </Route>

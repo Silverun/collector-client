@@ -20,20 +20,11 @@ export default function Login() {
         email: emailRef.current.value,
         password: passwordRef.current.value,
       });
-
       console.log(result.data);
       const { accessToken, role, id, username } = result.data;
       console.log("Auth accToken: " + accessToken);
       setAuth({ accessToken, role, id, username });
-
-      // set access token somewhere
-      //let user go where they wanted to go before redirected to login
-      // console.log(from + " from");
-      // console.log(auth.id);
-      // Try use something else later FIX NEEDED
-      // setTimeout(() => {
       navigate(from, { replace: true });
-      // }, 1000);
     } catch (error) {
       setMessage(error.response?.data || error.message);
       setTimeout(() => {
