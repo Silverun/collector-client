@@ -17,6 +17,7 @@ import NewItem from "./components/NewItem";
 import SoloItem from "./components/SoloItem";
 import EditItem from "./components/EditItem";
 import CheckStatus from "./components/CheckStatus";
+import Blocked from "./components/Blocked";
 
 function App() {
   const { auth } = useAuth();
@@ -49,13 +50,12 @@ function App() {
 
               <Route path="/item/:item_id/edit" element={<EditItem />} />
             </Route>
-
             {/* Admin only routes */}
             <Route element={<RequireAuth allowedRoles={[2]} />}>
               <Route path="/admin" element={<Admin />} />
             </Route>
           </Route>
-          {/* no matches path */}
+          <Route path="/blocked" element={<Blocked />}></Route>
           <Route path="*" element={<Missing />} />
         </Route>
       </Route>
