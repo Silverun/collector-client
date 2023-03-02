@@ -1,15 +1,13 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
-// import { config } from "../config";
-import { redirect } from "react-router-dom";
 
 export default function Register() {
   const [message, setMessage] = useState(null);
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-
-  // console.log(username, email, password);
+  const navigate = useNavigate();
 
   const regSubmitHandler = async (e) => {
     e.preventDefault();
@@ -19,12 +17,10 @@ export default function Register() {
         email: emailRef.current.value,
         password: passwordRef.current.value,
       })
-      .then((data) => {
-        console.log(data);
-        // redirect("/user/id");
+      .then(() => {
+        navigate("/");
       })
       .catch((err) => {
-        console.log(err.response.data);
         setMessage(err.response.data);
         setTimeout(() => {
           setMessage(null);

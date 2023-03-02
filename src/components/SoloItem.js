@@ -160,7 +160,7 @@ const SoloItem = () => {
             <h3>{curItem.name}</h3>
             <i
               role="button"
-              onClick={likeHandler}
+              onClick={auth.id ? likeHandler : null}
               className={heartToggle ? "pi pi-heart-fill" : "pi pi-heart"}
               style={{ color: "red", marginRight: 10, fontSize: 20 }}
             ></i>
@@ -190,7 +190,7 @@ const SoloItem = () => {
         })}
         <Row className="my-3">
           <Panel header="Comments" className="mt-3">
-            <div className="p-inputgroup flex-1">
+            <div hidden={!auth.id} className="p-inputgroup flex-1">
               <InputText
                 value={commentInput}
                 onChange={(e) => setCommentInput(e.target.value)}

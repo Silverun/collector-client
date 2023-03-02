@@ -22,12 +22,6 @@ const PersistLogin = () => {
     !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false);
   }, []);
 
-  //   useEffect(() => {
-  //     console.log(`isLoading: ${isLoading}`);
-  //     console.log("accessToken: ", auth?.accessToken);
-  //   }, [isLoading]);
-
-  // ADD SPINNER?
   const spinner = (
     <div className="d-flex justify-content-center">
       <div className="spinner-border" role="status">

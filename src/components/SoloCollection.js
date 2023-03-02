@@ -9,6 +9,7 @@ import { Tag } from "primereact/tag";
 import ReactMarkdown from "react-markdown";
 import { Button } from "primereact/button";
 import { InputSwitch } from "primereact/inputswitch";
+import useAuth from "../hooks/useAuth";
 
 const SoloCollection = () => {
   const [collection, setCollection] = useState({});
@@ -18,6 +19,7 @@ const SoloCollection = () => {
   const [allowMarkdown, setAllowMarkdown] = useState(false);
   const [noMarkdownFields, setNoMarkdownFields] = useState(false);
   const [checkedSwitch, setCheckedSwitch] = useState(false);
+  const { auth } = useAuth();
 
   const dataTableRef = useRef(null);
   const params = useParams();
@@ -181,6 +183,7 @@ const SoloCollection = () => {
         </div>
 
         <Link
+          hidden={!auth.id}
           to={`/collection/${params.col_id}/newitem`}
           type="button"
           className="btn btn-secondary mx-3"
@@ -188,6 +191,7 @@ const SoloCollection = () => {
           + New
         </Link>
         <Button
+          className="mx-3"
           size="sm"
           type="button"
           icon="pi pi-file"
@@ -286,6 +290,7 @@ const SoloCollection = () => {
               );
             })}
           <Column
+            hidden={!auth.id}
             body={actionsBody}
             exportable={false}
             style={{ width: "8rem" }}
