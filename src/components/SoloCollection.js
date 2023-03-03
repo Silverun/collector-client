@@ -20,6 +20,7 @@ const SoloCollection = () => {
   const [allowMarkdown, setAllowMarkdown] = useState(false);
   const [noMarkdownFields, setNoMarkdownFields] = useState(false);
   const [checkedSwitch, setCheckedSwitch] = useState(false);
+  const [isAllowed, setIsAllowed] = useState(false);
   const { auth } = useAuth();
   const { t } = useTranslation("soloCol");
   const dataTableRef = useRef(null);
@@ -62,6 +63,12 @@ const SoloCollection = () => {
     try {
       const response = await axios.get(`/collection/${params.col_id}`);
       setCollection(response.data);
+      const checkOwner = () => {
+        if (response.data.authorId === auth.id || auth.role === 2) {
+          setIsAllowed(true);
+        }
+      };
+      checkOwner();
       setNoMarkdownFields(
         response.data.extraFields.filter((field) => field.type !== "markdown")
       );
@@ -171,7 +178,7 @@ const SoloCollection = () => {
           />
         </div>
         <Link
-          hidden={!auth.id}
+          hidden={!isAllowed}
           to={`/collection/${params.col_id}/newitem`}
           type="button"
           className="btn btn-secondary mx-3"
@@ -275,7 +282,7 @@ const SoloCollection = () => {
               );
             })}
           <Column
-            hidden={!auth.id}
+            hidden={!isAllowed}
             body={actionsBody}
             exportable={false}
             style={{ width: "8rem" }}
