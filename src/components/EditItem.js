@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { ReactTags } from "react-tag-autocomplete";
 import "../styles/reactTag.css";
+import { useTranslation } from "react-i18next";
 
 const EditItem = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,12 +24,12 @@ const EditItem = () => {
   const axiosPrivate = useAxiosPrivate();
   const inputsRef = useRef();
   const allFieldsRefs = [];
+  const { t } = useTranslation("editItem");
 
   const getItem = useCallback(async () => {
     try {
       const response = await axiosPrivate.post(`item/${params.item_id}`);
       const data = response.data;
-      console.log("CurItem", data);
       setCurrentItem(data);
       setSelectedTags(data.tags);
       setItemNameInput(data.name);
@@ -45,7 +46,6 @@ const EditItem = () => {
       if (!response.data) return navigate("/");
       setCollection(response.data);
       setExtraFields(response.data.extraFields);
-      console.log("response.data.extraFields", response.data.extraFields);
     } catch (error) {
       console.log(error);
     }
@@ -55,7 +55,6 @@ const EditItem = () => {
     try {
       let allTags = [];
       const response = await axiosPrivate.get("/item/getall");
-
       response.data.forEach((item) => {
         item.tags.forEach((tag) => {
           allTags.push(tag);
@@ -76,7 +75,6 @@ const EditItem = () => {
       await getItem();
       await getSoloCollection();
       setTagSuggest(await getAllTags());
-
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -115,7 +113,6 @@ const EditItem = () => {
             .toUpperCase() +
           newTag.label.replaceAll(" ", "").toLowerCase().substring(1),
       };
-      console.log(formattedTag);
       return setSelectedTags([...selectedTags, formattedTag]);
     },
     [selectedTags]
@@ -130,10 +127,8 @@ const EditItem = () => {
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
-
     if (selectedTags.length < 1) {
       setInvalidTags(true);
-      console.log("Tags empty");
       return;
     } else {
       setInvalidTags(false);
@@ -160,15 +155,10 @@ const EditItem = () => {
     };
 
     try {
-      const response = await axiosPrivate.post(
-        `/item/${params.item_id}/update`,
-        formData
-      );
-      console.log(response.data);
+      await axiosPrivate.post(`/item/${params.item_id}/update`, formData);
     } catch (error) {
       console.log(error);
     }
-    console.log("submit");
     navigate(`/collection/${collection.id}`, { replace: true });
   };
 
@@ -177,12 +167,12 @@ const EditItem = () => {
   return (
     <div className="container text-center">
       <h5 className="mb-3">
-        Editing {currentItem.name} in {collection.name}
+        {t("head")}: {currentItem.name} - {collection.name}
       </h5>
       <Form onSubmit={formSubmitHandler}>
         <Row className="sm-3 align-items-center">
           <Form.Group as={Col} md="4" controlId="validationCustom01">
-            <Form.Label>Item name</Form.Label>
+            <Form.Label>{t("itemname")}</Form.Label>
             <Form.Control
               onChange={(e) => setItemNameInput(e.target.value)}
               value={itemNameInput}
@@ -191,7 +181,7 @@ const EditItem = () => {
             />
           </Form.Group>
           <Col md="6">
-            <Form.Label>Choose item tags</Form.Label>
+            <Form.Label>{t("choosetags")}</Form.Label>
             <ReactTags
               allowNew={true}
               labelText="Add item tags"
@@ -262,7 +252,7 @@ const EditItem = () => {
           )}
         </Row>
         <Button type="submit" variant="primary" className="mt-3">
-          Save changes
+          {t("savechange")}
         </Button>
       </Form>
     </div>

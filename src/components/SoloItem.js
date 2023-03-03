@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Await, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "../api/axios";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -13,6 +13,7 @@ import { Button } from "primereact/button";
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import "../styles/SoloItem.css";
+import { useTranslation } from "react-i18next";
 
 const SoloItem = () => {
   const params = useParams();
@@ -21,15 +22,14 @@ const SoloItem = () => {
   const [likes, setLikes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [heartToggle, setHeartToggle] = useState(false);
-
   const [commentInput, setCommentInput] = useState("");
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
+  const { t } = useTranslation("soloItem");
 
   const getItem = useCallback(async () => {
     try {
       const response = await axios.post(`item/${params.item_id}`);
-      console.log("CurItem", response.data);
       setCurrentItem(response.data);
     } catch (error) {
       console.log(error);
@@ -39,7 +39,6 @@ const SoloItem = () => {
   const getItemComments = useCallback(async () => {
     try {
       const response = await axios.get(`item/${params.item_id}/getcomments`);
-      console.log("comments", response.data);
       setComments(response.data);
     } catch (error) {
       console.log(error);
@@ -49,12 +48,10 @@ const SoloItem = () => {
   const getItemLikes = useCallback(async () => {
     try {
       const response = await axios.get(`item/${params.item_id}/getlikes`);
-      console.log("likes", response.data);
       const locatedUser = response.data.some(
         (like) => like.byUserId === auth.id
       );
       if (locatedUser) setHeartToggle(true);
-
       setLikes(response.data);
     } catch (error) {
       console.log(error);
@@ -84,10 +81,8 @@ const SoloItem = () => {
       byUserId: auth.id,
       itemId: curItem.id,
     };
-    console.log(commentData);
     try {
-      const response = await axiosPrivate.post("item/addcoment", commentData);
-      console.log(response.data);
+      await axiosPrivate.post("item/addcoment", commentData);
     } catch (error) {
       console.log(error);
     }
@@ -103,8 +98,7 @@ const SoloItem = () => {
     if (!heartToggle) {
       setHeartToggle(true);
       try {
-        const response = await axiosPrivate.post("/item/addlike", likeData);
-        console.log(response.data);
+        await axiosPrivate.post("/item/addlike", likeData);
       } catch (error) {
         console.error(error);
       }
@@ -113,10 +107,7 @@ const SoloItem = () => {
     if (heartToggle) {
       setHeartToggle(false);
       try {
-        const response = await axiosPrivate.get(
-          `item/${params.item_id}/removelike/${auth.id}`
-        );
-        console.log(response.data);
+        await axiosPrivate.get(`item/${params.item_id}/removelike/${auth.id}`);
       } catch (error) {
         console.error(error);
       }
@@ -143,7 +134,6 @@ const SoloItem = () => {
     const formattedDate = `${date.getDate()}.${
       date.getMonth() + 1
     }.${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}`;
-
     return formattedDate;
   };
 
@@ -189,14 +179,14 @@ const SoloItem = () => {
           );
         })}
         <Row className="my-3">
-          <Panel header="Comments" className="mt-3">
+          <Panel header={t("comments")} className="mt-3">
             <div hidden={!auth.id} className="p-inputgroup flex-1">
               <InputText
                 value={commentInput}
                 onChange={(e) => setCommentInput(e.target.value)}
-                placeholder="Add new comment"
+                placeholder={t("addNewComment")}
               />
-              <Button onClick={addCommentHandler} label="Add" />
+              <Button onClick={addCommentHandler} label=" + " />
             </div>
             {comments.map((comment) => (
               <div key={comment.id} className="card my-3">

@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { ReactTags } from "react-tag-autocomplete";
 import "../styles/reactTag.css";
+import { useTranslation } from "react-i18next";
 
 const NewItem = () => {
   const [invalidTags, setInvalidTags] = useState(false);
@@ -21,6 +22,7 @@ const NewItem = () => {
   const itemNameRef = useRef();
   const inputsRef = useRef();
   const allFieldsRefs = [];
+  const { t } = useTranslation("newItem");
 
   const getSoloCollection = useCallback(async () => {
     try {
@@ -28,7 +30,6 @@ const NewItem = () => {
       if (!response.data) return navigate("/");
       setCollection(response.data);
       setExtraFields(response.data.extraFields);
-      console.log("response.data.extraFields", response.data.extraFields);
     } catch (error) {
       console.log(error);
     }
@@ -38,23 +39,15 @@ const NewItem = () => {
     try {
       let allTags = [];
       const response = await axiosPrivate.get("/item/getall");
-      console.log("getAllTags", response.data);
-
       response.data.forEach((item) => {
         item.tags.forEach((tag) => {
-          console.log(tag);
           allTags.push(tag);
         });
       });
-      console.log("tags", allTags);
-
       const key = "label";
-
       const uniqueTags = [
         ...new Map(allTags.map((tag) => [tag[key], tag])).values(),
       ];
-
-      console.log("unique tags", uniqueTags);
       return uniqueTags;
     } catch (error) {
       console.log(error);
@@ -93,7 +86,6 @@ const NewItem = () => {
             .toUpperCase() +
           newTag.label.replaceAll(" ", "").toLowerCase().substring(1),
       };
-      console.log(formattedTag);
       return setSelectedTags([...selectedTags, formattedTag]);
     },
     [selectedTags]
@@ -108,15 +100,12 @@ const NewItem = () => {
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
-
     if (selectedTags.length < 1) {
       setInvalidTags(true);
-      console.log("Tags empty");
       return;
     } else {
       setInvalidTags(false);
     }
-
     const extractedInputs = () => {
       const result = allFieldsRefs.map((field) => {
         return {
@@ -138,14 +127,10 @@ const NewItem = () => {
     };
 
     try {
-      const response = await axiosPrivate.post("/item/new", formData);
-      console.log(response.data);
+      await axiosPrivate.post("/item/new", formData);
     } catch (error) {
       console.log(error);
     }
-
-    console.log(formData);
-    console.log("submit");
     navigate(`/collection/${collection.id}`, { replace: true });
   };
 
@@ -153,15 +138,17 @@ const NewItem = () => {
 
   return (
     <div className="container text-center">
-      <h5 className="mb-3">New item for {collection.name}</h5>
+      <h5 className="mb-3">
+        {t("head")} {collection.name}
+      </h5>
       <Form onSubmit={formSubmitHandler}>
         <Row className="sm-3 align-items-center">
           <Form.Group as={Col} md="4" controlId="validationCustom01">
-            <Form.Label>Item name</Form.Label>
+            <Form.Label>{t("itemname")}</Form.Label>
             <Form.Control ref={itemNameRef} required type="text" />
           </Form.Group>
           <Col md="6">
-            <Form.Label>Choose item tags</Form.Label>
+            <Form.Label>{t("choosetags")}</Form.Label>
             <ReactTags
               allowNew={true}
               labelText="Add item tags"
@@ -193,7 +180,7 @@ const NewItem = () => {
                       as="textarea"
                       required
                       name={field.name}
-                      placeholder="Markdown is supported here!"
+                      placeholder={t("markdownsup")}
                       style={{ height: "100px" }}
                     />
                   </Form.Group>
@@ -233,7 +220,7 @@ const NewItem = () => {
         </Row>
 
         <Button type="submit" variant="primary" className="mt-3">
-          Add new item
+          {t("addnew")}
         </Button>
       </Form>
     </div>

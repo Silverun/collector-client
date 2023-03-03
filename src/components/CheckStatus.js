@@ -46,18 +46,11 @@ const CheckStatus = () => {
 
   if (isBlocked) {
     console.log("BLOCKED");
-
     return <Navigate to="/blocked" state={{ from: location }} replace />;
   } else {
     console.log("FREE");
     return <Outlet />;
   }
-
-  //   } else if (auth.id) {
-  //     return <Navigate to="/unauthorized" state={{ from: location }} replace />;
-  //   } else {
-  //     return <Navigate to="/login" state={{ from: location }} replace />;
-  //   }
 };
 
 export default CheckStatus;

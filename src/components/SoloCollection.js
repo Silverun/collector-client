@@ -10,6 +10,7 @@ import ReactMarkdown from "react-markdown";
 import { Button } from "primereact/button";
 import { InputSwitch } from "primereact/inputswitch";
 import useAuth from "../hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 const SoloCollection = () => {
   const [collection, setCollection] = useState({});
@@ -20,7 +21,7 @@ const SoloCollection = () => {
   const [noMarkdownFields, setNoMarkdownFields] = useState(false);
   const [checkedSwitch, setCheckedSwitch] = useState(false);
   const { auth } = useAuth();
-
+  const { t } = useTranslation("soloCol");
   const dataTableRef = useRef(null);
   const params = useParams();
   const navigate = useNavigate();
@@ -28,8 +29,6 @@ const SoloCollection = () => {
   const getCollectionItems = useCallback(async () => {
     try {
       const response = await axios.get(`/item/${params.col_id}`);
-      console.log("raw items", response.data);
-
       const formattedItems = response.data.map((item) => {
         const obj = {
           id: item.id,
@@ -49,14 +48,11 @@ const SoloCollection = () => {
               value = field.value;
               break;
           }
-
           obj[field.name.toLowerCase().replaceAll(" ", "")] = value;
         });
-
         return obj;
       });
       setItems(formattedItems);
-      console.log("set Items", formattedItems);
     } catch (error) {
       console.log(error);
     }
@@ -65,14 +61,10 @@ const SoloCollection = () => {
   const getSoloCollection = useCallback(async () => {
     try {
       const response = await axios.get(`/collection/${params.col_id}`);
-
       setCollection(response.data);
-      console.log("set collection", response.data);
-      // changed here from collectiuon
       setNoMarkdownFields(
         response.data.extraFields.filter((field) => field.type !== "markdown")
       );
-
       setFilters(() => {
         const result = {
           id: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -85,7 +77,6 @@ const SoloCollection = () => {
             matchMode: FilterMatchMode.CONTAINS,
           };
         });
-        console.log("set filters", result);
         return result;
       });
 
@@ -110,7 +101,6 @@ const SoloCollection = () => {
   }, [getSoloCollection, getCollectionItems, runAll]);
 
   const tagsBody = (rowData, col) => {
-    // console.log(col);
     return rowData.tags.map((tag) => (
       <Tag
         key={tag + Math.random().toFixed(3) * 1000}
@@ -169,7 +159,7 @@ const SoloCollection = () => {
       >
         <div className="d-flex">
           <label className="fw-light me-3" htmlFor="switch">
-            Allow Markdown
+            {t("allowMarkdown")}
           </label>
           <InputSwitch
             id="switch"
@@ -177,29 +167,25 @@ const SoloCollection = () => {
             onChange={(e) => {
               setCheckedSwitch(e.value);
               setAllowMarkdown(e.value);
-              console.log(noMarkdownFields);
             }}
           />
         </div>
-
         <Link
           hidden={!auth.id}
           to={`/collection/${params.col_id}/newitem`}
           type="button"
           className="btn btn-secondary mx-3"
         >
-          + New
+          {t("newItem")}
         </Link>
         <Button
-          className="mx-3"
           size="sm"
           type="button"
+          label={t("exportCSV")}
           icon="pi pi-file"
           onClick={() => exportCSV(false)}
           data-pr-tooltip="CSV"
-        >
-          Export to CSV
-        </Button>
+        ></Button>
       </div>
     );
   };
@@ -221,7 +207,6 @@ const SoloCollection = () => {
         </div>
       </div>
       <div className="row my-3">
-        {/* <div className="card"> */}
         <DataTable
           ref={dataTableRef}
           header={headerTemplate}
@@ -248,7 +233,7 @@ const SoloCollection = () => {
             filter
             sortable
             field="name"
-            header="Name"
+            header={t("name")}
           ></Column>
           <Column
             align="center"
@@ -256,7 +241,7 @@ const SoloCollection = () => {
             sortable
             field="tags"
             body={tagsBody}
-            header="Tags"
+            header={t("tags")}
           ></Column>
           {collection.extraFields
             .filter((field) => {
@@ -296,7 +281,6 @@ const SoloCollection = () => {
             style={{ width: "8rem" }}
           ></Column>
         </DataTable>
-        {/* </div> */}
       </div>
     </div>
   );

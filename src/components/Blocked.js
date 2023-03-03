@@ -16,7 +16,7 @@ const Blocked = () => {
   return (
     <div className="container text-center mt-5">
       <div className="modal-dialog modal-lg mb-3">
-        You have been blocked and will be logged out.
+        You have been blocked and will be logged out!
       </div>
     </div>
   );

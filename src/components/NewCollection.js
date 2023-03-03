@@ -1,6 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-// USE AXIOS PRIVATE HOOK INSTEAD OF REGULAR
-// import { axiosPrivate } from "../api/axios";
+import React, { useRef, useState } from "react";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileEncode from "filepond-plugin-file-encode";
@@ -15,26 +13,23 @@ import useAuth from "../hooks/useAuth";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Spinner from "react-bootstrap/Spinner";
+import { useTranslation } from "react-i18next";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileEncode);
 
-const NewCollection = (props) => {
+const NewCollection = () => {
   const [files, setFiles] = useState();
   const [theme, setTheme] = useState();
   const [extraFieldType, setExtraFieldType] = useState("text");
   const [extraFieldName, setExtraFieldName] = useState("");
   const [extraFields, setExtraFields] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { auth } = useAuth();
   const nameRef = useRef();
   const descRef = useRef();
   const navigate = useNavigate();
   const params = useParams();
   const axiosPrivate = useAxiosPrivate();
-
-  useEffect(() => {
-    console.log("params", params.id);
-  });
+  const { t } = useTranslation("newCol");
 
   const createFieldHandler = () => {
     const newField = {
@@ -42,11 +37,9 @@ const NewCollection = (props) => {
       type: extraFieldType,
       id: Math.random().toFixed(3) * 1000,
     };
-    // console.log(newField);
     setExtraFields((prev) => {
       return [...prev, newField];
     });
-    // console.log(extraFields);
   };
 
   const deleteFieldHandler = (id) => {
@@ -57,25 +50,20 @@ const NewCollection = (props) => {
   const formSubmitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    // console.log(extraFields);
     const formData = new FormData();
     formData.append("image", files?.file);
     formData.append("name", nameRef.current.value);
     formData.append("description", descRef.current.value);
     formData.append("theme", theme);
     formData.append("extraFields", JSON.stringify(extraFields));
-    // author id from params id instead of auth id (if admin creates collection)
     formData.append("authorId", +params.id);
-    // console.log(formData.get("image"));
     try {
-      const response = await axiosPrivate.post("/collection/new", formData, {
+      await axiosPrivate.post("/collection/new", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.data);
       setIsLoading(false);
-      //changed from auth.id
       navigate(`/user/${params.id}`, { replace: true });
     } catch (error) {
       setIsLoading(false);
@@ -85,7 +73,7 @@ const NewCollection = (props) => {
 
   return (
     <div className="container-lg text-center">
-      <h5>Create new collection</h5>
+      <h5>{t("newCol")}</h5>
       <form className="container needs-validation" onSubmit={formSubmitHandler}>
         <div className="row container">
           <div className="col-sm-4">
@@ -104,7 +92,7 @@ const NewCollection = (props) => {
           <div className="col-sm px-5 text-start">
             <div className="row my-3">
               <label htmlFor="collection_name" className="form-label">
-                Name
+                {t("newName")}
               </label>
               <input
                 required
@@ -116,7 +104,7 @@ const NewCollection = (props) => {
             </div>
             <div className="row my-3">
               <label htmlFor="col_description" className="form-label">
-                Description
+                {t("desc")}
               </label>
               <textarea
                 required
@@ -127,28 +115,6 @@ const NewCollection = (props) => {
               />
             </div>
             <div className="row my-4">
-              {/* <DropdownButton
-                variant="secondary"
-                id="dropdown-basic-button"
-                title="Choose theme"
-              >
-                <Dropdown.Item onClick={() => setTheme("Coins and Currency")}>
-                  Coins and Currency
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTheme("Books")}>
-                  Books
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTheme("Alcohol")}>
-                  Alcohol
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTheme("Trading Cards")}>
-                  Trading Cards
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTheme("Classic Cars")}>
-                  Classic Cars
-                </Dropdown.Item>
-              </DropdownButton> */}
-
               <Form.Select
                 required
                 onChange={(e) => {
@@ -156,7 +122,7 @@ const NewCollection = (props) => {
                 }}
                 aria-label="Default select example"
               >
-                <option value="">Choose theme</option>
+                <option value="">{t("choose")}</option>
                 <option value="Coins and Currency">Coins and Currency</option>
                 <option value="Books">Books</option>
                 <option value="Alcohol">Alcohol</option>
@@ -164,9 +130,8 @@ const NewCollection = (props) => {
                 <option value="Classic Cars">Classic Cars</option>
               </Form.Select>
             </div>
-            {/* Extra fields */}
             <div className="row">
-              <h6 className="text-start mb-3">Extra fields</h6>
+              <h6 className="text-start mb-3">{t("extra")}</h6>
               <ListGroup className="mb-3">
                 {extraFields.map((field, i) => (
                   <ListGroup.Item key={field.id}>
@@ -197,7 +162,7 @@ const NewCollection = (props) => {
                   onChange={(e) => {
                     setExtraFieldName(e.target.value);
                   }}
-                  placeholder="Field name"
+                  placeholder={t("fieldName")}
                   aria-label="Field type input"
                 />
                 <FloatingLabel controlId="floatingSelect" label="Field type">
@@ -216,7 +181,7 @@ const NewCollection = (props) => {
                   </Form.Select>
                 </FloatingLabel>
                 <Button onClick={createFieldHandler} variant="secondary">
-                  Add
+                  +
                 </Button>
               </InputGroup>
             </div>
@@ -226,7 +191,7 @@ const NewCollection = (props) => {
           <Spinner animation="border" />
         ) : (
           <button type="submit" className="btn btn-primary mt-3">
-            Create new collection
+            {t("newC")}
           </button>
         )}
       </form>

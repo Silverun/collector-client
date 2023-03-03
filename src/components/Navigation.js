@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useLogout from "../hooks/useLogout";
@@ -9,6 +9,7 @@ import axios from "../api/axios";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { useTranslation } from "react-i18next";
 
 const Navigation = () => {
   const [hamButton, setHamButton] = useState(true);
@@ -16,10 +17,14 @@ const Navigation = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [langButtonText, setLangButtonText] = useState(
+    localStorage.getItem("i18nextLng") || "en-US"
+  );
   const navigate = useNavigate();
   const logout = useLogout();
   const { auth } = useAuth();
   const [visible, setVisible] = useState(false);
+  const { t, i18n } = useTranslation("nav");
 
   const miniSearch = new MiniSearch({
     fields: [
@@ -51,7 +56,6 @@ const Navigation = () => {
   const searchClickHandler = async () => {
     setVisible(true);
     const { data } = await axios.get("/item/getsearchitems");
-    console.log("getsearchitems", data);
     setSearchData(data);
   };
 
@@ -61,7 +65,6 @@ const Navigation = () => {
     setSearchResults(results);
     const suggestions = miniSearch.autoSuggest(e.target.value);
     setSearchSuggestions(suggestions);
-    console.log(suggestions);
   };
 
   const hamburgerButtonToggler = () => {
@@ -81,6 +84,17 @@ const Navigation = () => {
     }
   };
 
+  const langButtonHandler = () => {
+    if (langButtonText === "ru-RU") {
+      i18n.changeLanguage("en-US");
+      setLangButtonText("en-US");
+    }
+    if (langButtonText === "en-US") {
+      i18n.changeLanguage("ru-RU");
+      setLangButtonText("ru-RU");
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand-sm shadow-sm bg-body-tertiary">
       <div className="container-fluid">
@@ -93,7 +107,7 @@ const Navigation = () => {
           />
         </NavLink>
         <Sidebar visible={visible} onHide={() => setVisible(false)}>
-          <h5 className="mb-5">Search for items</h5>
+          <h5 className="mb-5">{t("searchH3")}</h5>
           <InputText
             id="glob_search"
             value={searchInput}
@@ -153,7 +167,8 @@ const Navigation = () => {
                   aria-current="page"
                   to={`/user/${auth.id}`}
                 >
-                  {auth.username}'s collections
+                  {auth.username}
+                  {t("userCol")}
                 </NavLink>
               </li>
             ) : null}
@@ -165,7 +180,7 @@ const Navigation = () => {
                   }
                   to="/login"
                 >
-                  Login
+                  {t("login")}
                 </NavLink>
               </li>
             )}
@@ -177,44 +192,32 @@ const Navigation = () => {
                   }
                   to="/admin"
                 >
-                  Admin dashboard
+                  {t("adminDash")}
                 </NavLink>
               </li>
             ) : null}
           </ul>
           <Button
+            onClick={langButtonHandler}
+            text
+            severity="secondary"
+            label={langButtonText}
+            icon="pi pi-language"
+          />
+          <Button
             onClick={searchClickHandler}
             text
             severity="secondary"
-            label="Search"
+            label={t("searchLabel")}
             icon="pi pi-search"
           />
-          {/* <form className="d-flex" role="search">
-            <input
-              onFocus={searchFocusHandler}
-              className="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-            <button
-              onClick={searchHandler}
-              className="btn btn-outline-success"
-              type="submit"
-            >
-              Search
-            </button>
-          </form> */}
-
           {auth.role ? (
             <button
               onClick={logoutButtonHandler}
               className="btn btn-outline-success ms-2"
               type="button"
             >
-              Logout
+              {t("logout")}
             </button>
           ) : null}
         </div>
