@@ -11,15 +11,15 @@ import i18n from "./api/i18n";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  // <React.StrictMode>
-  <BrowserRouter>
-    <AuthProvider>
-      <Suspense
-        fallback={<div className="container text-center">Loading...</div>}
-      >
-        <App />
-      </Suspense>
-    </AuthProvider>
-  </BrowserRouter>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <Suspense
+          fallback={<div className="container text-center">Loading...</div>}
+        >
+          <App />
+        </Suspense>
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
 );

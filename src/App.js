@@ -10,7 +10,6 @@ import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import NewCollection from "./components/NewCollection";
-import useAuth from "./hooks/useAuth";
 import EditCollection from "./components/EditCollection";
 import SoloCollection from "./components/SoloCollection";
 import NewItem from "./components/NewItem";
@@ -20,8 +19,6 @@ import CheckStatus from "./components/CheckStatus";
 import Blocked from "./components/Blocked";
 
 function App() {
-  const { auth } = useAuth();
-
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
