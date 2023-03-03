@@ -1,5 +1,5 @@
 import axios from "axios";
-const serverUrl = "https://colltest.herokuapp.com/";
+const serverUrl = "https://colltest.herokuapp.com";
 
 export default axios.create({
   baseURL: serverUrl,
