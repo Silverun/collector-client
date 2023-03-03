@@ -23,6 +23,7 @@ const SoloItem = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [heartToggle, setHeartToggle] = useState(false);
   const [commentInput, setCommentInput] = useState("");
+  const [isAllowed, setIsAllowed] = useState(false);
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const { t } = useTranslation("soloItem");
@@ -31,6 +32,12 @@ const SoloItem = () => {
     try {
       const response = await axios.post(`item/${params.item_id}`);
       setCurrentItem(response.data);
+      const checkOwner = () => {
+        if (response.data.authorId === auth.id || auth.role === 2) {
+          setIsAllowed(true);
+        }
+      };
+      checkOwner();
     } catch (error) {
       console.log(error);
     }
@@ -150,7 +157,7 @@ const SoloItem = () => {
             <h3>{curItem.name}</h3>
             <i
               role="button"
-              onClick={auth.id ? likeHandler : null}
+              onClick={isAllowed ? likeHandler : null}
               className={heartToggle ? "pi pi-heart-fill" : "pi pi-heart"}
               style={{ color: "red", marginRight: 10, fontSize: 20 }}
             ></i>
@@ -180,7 +187,7 @@ const SoloItem = () => {
         })}
         <Row className="my-3">
           <Panel header={t("comments")} className="mt-3">
-            <div hidden={!auth.id} className="p-inputgroup flex-1">
+            <div hidden={!isAllowed} className="p-inputgroup flex-1">
               <InputText
                 value={commentInput}
                 onChange={(e) => setCommentInput(e.target.value)}
