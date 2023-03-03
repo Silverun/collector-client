@@ -1,5 +1,5 @@
 import axios from "axios";
-const serverUrl = "http://localhost:5000";
+const serverUrl = "https://colltest.herokuapp.com/";
 
 export default axios.create({
   baseURL: serverUrl,
