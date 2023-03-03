@@ -7,6 +7,7 @@ import "../styles/reactCloud.css";
 import { Tag } from "primereact/tag";
 import MiniSearch from "minisearch";
 import { Sidebar } from "primereact/sidebar";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const [collections, setCollections] = useState([]);
@@ -16,6 +17,7 @@ const Home = () => {
   const [tags, setTags] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const navigate = useNavigate();
+  const { t } = useTranslation("home");
 
   const miniSearch = new MiniSearch({
     fields: ["tags"],
@@ -34,7 +36,6 @@ const Home = () => {
   const getSortedCollections = useCallback(async () => {
     try {
       const response = await axios.get(`/collection/getsorted`);
-      console.log("setCollections", response.data);
       setCollections(response.data);
     } catch (error) {
       console.log(error);
@@ -44,7 +45,6 @@ const Home = () => {
   const getAllItems = useCallback(async () => {
     try {
       const response = await axios.get("/item/getall");
-      // console.log("All items", response.data);
       const items = response.data.map((item) => {
         return {
           id: item.id,
@@ -55,8 +55,6 @@ const Home = () => {
       });
       const sorted = items.sort((a, b) => b.added - a.added);
       setLatestItems(sorted);
-      console.log("SetlatestItems", sorted);
-      // miniSearch.addAll(sorted);
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +63,6 @@ const Home = () => {
   const getCloudTags = useCallback(async () => {
     try {
       const response = await axios.get("/item/gettags");
-      console.log("getCloudTags", response.data);
       setTags(response.data);
     } catch (error) {
       console.log(error);
@@ -81,7 +78,6 @@ const Home = () => {
 
   const tagClickHandler = (tag, e) => {
     const result = miniSearch.search(tag.value);
-    console.log(result);
     setSearchResult(result);
     setVisible(true);
   };
@@ -93,7 +89,7 @@ const Home = () => {
   return (
     <div className="container">
       <Sidebar visible={visible} onHide={() => setVisible(false)}>
-        <h5 className="mb-5">Items matching this tag:</h5>
+        <h5 className="mb-5">{t("tagMatch")}</h5>
         <ListGroup variant="flush">
           {searchResult.map((result) => (
             <ListGroup.Item
@@ -108,7 +104,6 @@ const Home = () => {
           ))}
         </ListGroup>
       </Sidebar>
-
       <div className="row text-center">
         <TagCloud
           key={Math.random().toFixed(4) * 10000}
@@ -120,7 +115,7 @@ const Home = () => {
       </div>
       <div className="row">
         <div className="col mt-3">
-          <h4 className="mb-3">Top collections</h4>
+          <h4 className="mb-3">{t("topCol")}</h4>
           <ListGroup variant="flush">
             {collections.map((col) => (
               <ListGroup.Item
@@ -143,7 +138,7 @@ const Home = () => {
           </ListGroup>
         </div>
         <div className="col mt-3">
-          <h4 className="mb-3">Latest added items</h4>
+          <h4 className="mb-3">{t("latestAdded")}</h4>
           <ListGroup variant="flush">
             {latestItems.map((item) => (
               <ListGroup.Item

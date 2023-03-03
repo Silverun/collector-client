@@ -2,15 +2,16 @@ import React, { useRef, useState } from "react";
 import axios from "../api/axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { auth, setAuth } = useAuth();
+  const { setAuth } = useAuth();
   const [message, setMessage] = useState(null);
-
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation("login");
   const from = location.state?.from?.pathname || "/";
 
   const loginSubmitHandler = async (e) => {
@@ -20,9 +21,7 @@ export default function Login() {
         email: emailRef.current.value,
         password: passwordRef.current.value,
       });
-      console.log(result.data);
       const { accessToken, role, id, username } = result.data;
-      console.log("Auth accToken: " + accessToken);
       setAuth({ accessToken, role, id, username });
       navigate(from, { replace: true });
     } catch (error) {
@@ -46,7 +45,7 @@ export default function Login() {
       style={{ maxWidth: 400 }}
     >
       <label htmlFor="emailinput" className="form-label">
-        Email
+        {t("email")}
       </label>
       <input
         ref={emailRef}
@@ -55,17 +54,17 @@ export default function Login() {
         id="emailinput"
       />
       <label htmlFor="passwordinput" className="form-label">
-        Password
+        {t("password")}
       </label>
       <input ref={passwordRef} className="form-control mb-3" type="password" />
       <button type="submit" className="btn btn-primary mb-3">
-        Login
+        {t("loginbutton")}
       </button>
       {message ? alert : null}
       <div>
-        No account yet?{" "}
+        <p>{t("noacc")}</p>
         <Link style={{ textDecoration: "none" }} to="/register">
-          Register.
+          {t("register")}
         </Link>
       </div>
     </form>

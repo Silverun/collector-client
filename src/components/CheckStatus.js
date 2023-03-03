@@ -2,14 +2,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
-import useLogout from "../hooks/useLogout";
+import Spinner from "react-bootstrap/Spinner";
 
 const CheckStatus = () => {
   const { auth } = useAuth();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isBlocked, setIsBlocked] = useState();
-  const logout = useLogout();
 
   const checkBlock = useCallback(async () => {
     try {
@@ -21,7 +20,6 @@ const CheckStatus = () => {
       }
       if (status === "blocked") {
         setIsBlocked(true);
-        //   await logout();
         setIsLoading(false);
       }
     } catch (error) {
@@ -34,24 +32,20 @@ const CheckStatus = () => {
   }, [checkBlock]);
 
   if (isLoading) {
-    console.log("LOADING");
-    return <p>Loading...</p>;
+    return (
+      <div className="container">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
   }
 
   if (isBlocked) {
-    console.log("BLOCKED");
-
-    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+    return <Navigate to="/blocked" state={{ from: location }} replace />;
   } else {
-    console.log("FREE");
     return <Outlet />;
   }
-
-  //   } else if (auth.id) {
-  //     return <Navigate to="/unauthorized" state={{ from: location }} replace />;
-  //   } else {
-  //     return <Navigate to="/login" state={{ from: location }} replace />;
-  //   }
 };
 
 export default CheckStatus;

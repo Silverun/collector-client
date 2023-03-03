@@ -1,0 +1,12 @@
+{
+  "block": "Block",
+  "unblock": "Unblock",
+  "delete": "Delete",
+  "promote": "Promote to Admin",
+  "demote": "Demote to User",
+  "dash": "Admin dashboard",
+  "name": "Name",
+  "email": "Email",
+  "role": "Role",
+  "status": "Status"
+}

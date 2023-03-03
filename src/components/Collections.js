@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import ReactMarkdown from "react-markdown";
+import { useTranslation } from "react-i18next";
 
 const Collections = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -11,11 +12,11 @@ const Collections = () => {
   const [collections, setCollections] = useState([]);
   const params = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation("collections");
 
   const getCollections = useCallback(async () => {
     try {
       const response = await axiosPrivate.get(`/user/${params.id}`);
-      console.log(response.data.result);
       setCollections(response.data.result);
     } catch (error) {
       console.log(error);
@@ -28,18 +29,15 @@ const Collections = () => {
 
   const deleteCollectionHandler = async (id, e) => {
     e.stopPropagation();
-    // console.log(id);
     try {
-      const response = await axiosPrivate.post("/collection/delete", { id });
+      await axiosPrivate.post("/collection/delete", { id });
       getCollections();
-      console.log("response delete", response.data);
     } catch (error) {
       console.log(error);
     }
   };
   const editCollectionHandler = (id, e) => {
     e.stopPropagation();
-    console.log(id);
     navigate(`/user/${params.id}/collection/${id}/edit`, {
       state: { collection: collections.find((col) => col.id === id) },
     });
@@ -72,9 +70,9 @@ const Collections = () => {
         <thead>
           <tr>
             <th scope="col"></th>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Theme</th>
+            <th scope="col">{t("colName")}</th>
+            <th scope="col">{t("colDesc")}</th>
+            <th scope="col">{t("colTheme")}</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
@@ -112,8 +110,7 @@ const Collections = () => {
                   <ReactMarkdown>{collection.description}</ReactMarkdown>
                 </td>
                 <td>{collection.theme}</td>
-                <td className="">
-                  {/* edit collection button */}
+                <td>
                   <button
                     onClick={(e) => editCollectionHandler(collection.id, e)}
                     type="button"
@@ -136,7 +133,6 @@ const Collections = () => {
                   </button>
                 </td>
                 <td>
-                  {/* delete collection button */}
                   <button
                     onClick={(e) => deleteCollectionHandler(collection.id, e)}
                     type="button"

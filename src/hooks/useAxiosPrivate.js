@@ -18,7 +18,6 @@ const useAxiosPrivate = () => {
         config.params = {
           userid: auth.id,
         };
-        console.log("req params", config);
         return config;
       },
       (error) => Promise.reject(error)
@@ -28,24 +27,15 @@ const useAxiosPrivate = () => {
       (response) => response,
       async (error) => {
         //Access token expired case below
-        // console.log(
-        //   "error.config from resIntercept(prevRequest) ",
-        //   error.config
-        // );
-        // console.log("error response: ", error.response);
         const prevRequest = error?.config;
-        // console.log("PrevReq.sent before " + JSON.stringify(prevRequest.sent));
-
         if (error?.response?.status === 403 && !prevRequest?.sent) {
           //Check one time that accessToken has expired and renew it
           prevRequest.sent = true;
-          // console.log("PrevReq.sent after ", prevRequest);
           const newAccessToken = await refreshToken();
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
           return axiosPrivate(prevRequest);
         }
-        // console.log("Coming from here resInt");
         return Promise.reject(error);
       }
     );

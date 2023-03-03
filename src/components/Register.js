@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
   const [message, setMessage] = useState(null);
@@ -8,6 +9,7 @@ export default function Register() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
+  const { t } = useTranslation("register");
 
   const regSubmitHandler = async (e) => {
     e.preventDefault();
@@ -41,7 +43,7 @@ export default function Register() {
       style={{ maxWidth: 400 }}
     >
       <label htmlFor="nameinput" className="form-label">
-        Your Name
+        {t("name")}
       </label>
       <input
         type="text"
@@ -50,7 +52,7 @@ export default function Register() {
         id="nameinput"
       />
       <label htmlFor="emailinput" className="form-label">
-        Email
+        {t("email")}
       </label>
       <input
         ref={emailRef}
@@ -59,11 +61,11 @@ export default function Register() {
         id="emailinput"
       />
       <label htmlFor="passwordinput" className="form-label">
-        Password
+        {t("password")}
       </label>
       <input ref={passwordRef} className="form-control mb-3" type="password" />
       <button type="submit" className="btn btn-primary">
-        Register
+        {t("regbutton")}
       </button>
       {message ? alert : null}
     </form>

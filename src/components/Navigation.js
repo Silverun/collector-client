@@ -1,60 +1,70 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useLogout from "../hooks/useLogout";
 import logo from "../img/cltr_logo_100.png";
 import MiniSearch from "minisearch";
 import ListGroup from "react-bootstrap/ListGroup";
+import axios from "../api/axios";
+import { Sidebar } from "primereact/sidebar";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { useTranslation } from "react-i18next";
 
 const Navigation = () => {
   const [hamButton, setHamButton] = useState(true);
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchData, setSearchData] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [langButtonText, setLangButtonText] = useState(
+    localStorage.getItem("i18nextLng") || "en-US"
+  );
   const navigate = useNavigate();
   const logout = useLogout();
   const { auth } = useAuth();
-  const searchRef = useRef();
+  const [visible, setVisible] = useState(false);
+  const { t, i18n } = useTranslation("nav");
 
-  const documents = [
-    {
-      id: 1,
-      title: "Moby Dick",
-      text: "Call me Ishmael. Some years ago...",
-      category: "fiction",
+  const miniSearch = new MiniSearch({
+    fields: [
+      "tags",
+      "colDesc",
+      "colName",
+      "colTheme",
+      "comments",
+      "fieldsValues",
+      "name",
+    ],
+    storeFields: ["name"],
+    extractField: (document, fieldName) => {
+      if (Array.isArray(document[fieldName])) {
+        return document[fieldName].join(" ");
+      } else {
+        return document[fieldName];
+      }
     },
-    {
-      id: 2,
-      title: "Zen and the Art of Motorcycle Maintenance",
-      text: "I can see by my watch...",
-      category: "fiction",
+    searchOptions: {
+      prefix: true,
+      boost: { name: 2 },
+      fuzzy: 0.2,
     },
-    {
-      id: 3,
-      title: "Neuromancer",
-      text: "The sky above the port was...",
-      category: "fiction",
-    },
-    {
-      id: 4,
-      title: "Zen and the Art of Archery",
-      text: "At first sight it must seem...",
-      category: "non-fiction",
-    },
-    // ...and more
-  ];
-
-  let miniSearch = new MiniSearch({
-    fields: ["title", "text"], // fields to index for full-text search
-    storeFields: ["title", "category"], // fields to return with search results
   });
 
-  // Index all documents
-  miniSearch.addAll(documents);
+  miniSearch.addAll(searchData);
 
-  const searchHandler = (e) => {
-    e.preventDefault();
-    const results = miniSearch.search(searchRef.current.value);
-    console.log("search results", results);
-    setSearchResult(results);
+  const searchClickHandler = async () => {
+    setVisible(true);
+    const { data } = await axios.get("/item/getsearchitems");
+    setSearchData(data);
+  };
+
+  const onInputChangeHandler = (e) => {
+    setSearchInput(e.target.value);
+    const results = miniSearch.search(e.target.value);
+    setSearchResults(results);
+    const suggestions = miniSearch.autoSuggest(e.target.value);
+    setSearchSuggestions(suggestions);
   };
 
   const hamburgerButtonToggler = () => {
@@ -69,19 +79,21 @@ const Navigation = () => {
     try {
       await logout();
       navigate("/login");
-      // console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const searchResultsList = (
-    <ListGroup>
-      {searchResult.map((item) => (
-        <ListGroup.Item key={item.id}>Cras justo odio</ListGroup.Item>
-      ))}
-    </ListGroup>
-  );
+  const langButtonHandler = () => {
+    if (langButtonText === "ru-RU") {
+      i18n.changeLanguage("en-US");
+      setLangButtonText("en-US");
+    }
+    if (langButtonText === "en-US") {
+      i18n.changeLanguage("ru-RU");
+      setLangButtonText("ru-RU");
+    }
+  };
 
   return (
     <nav className="navbar navbar-expand-sm shadow-sm bg-body-tertiary">
@@ -94,6 +106,37 @@ const Navigation = () => {
             alt="col_logo"
           />
         </NavLink>
+        <Sidebar visible={visible} onHide={() => setVisible(false)}>
+          <h5 className="mb-5">{t("searchH3")}</h5>
+          <InputText
+            id="glob_search"
+            value={searchInput}
+            onChange={onInputChangeHandler}
+          />
+          <div className="my-3">
+            <small id="glob_search-help">
+              {searchSuggestions.map((sug) => (
+                <span className="me-3" key={sug.score}>
+                  {sug.suggestion}
+                </span>
+              ))}
+            </small>
+          </div>
+          <ListGroup variant="flush">
+            {searchResults.map((result) => (
+              <ListGroup.Item
+                onClick={() => {
+                  setVisible(false);
+                  navigate(`item/${result.id}`);
+                }}
+                action
+                key={result.id + result.name}
+              >
+                {result.name}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Sidebar>
         <button
           onClick={hamburgerButtonToggler}
           className={hamButton ? "navbar-toggler" : "navbar-toggler collapsed"}
@@ -124,7 +167,8 @@ const Navigation = () => {
                   aria-current="page"
                   to={`/user/${auth.id}`}
                 >
-                  {auth.username}'s collections
+                  {auth.username}
+                  {t("userCol")}
                 </NavLink>
               </li>
             ) : null}
@@ -136,7 +180,7 @@ const Navigation = () => {
                   }
                   to="/login"
                 >
-                  Login
+                  {t("login")}
                 </NavLink>
               </li>
             )}
@@ -148,35 +192,32 @@ const Navigation = () => {
                   }
                   to="/admin"
                 >
-                  Admin dashboard
+                  {t("adminDash")}
                 </NavLink>
               </li>
             ) : null}
           </ul>
-          <form className="d-flex" role="search">
-            <input
-              className="form-control me-2"
-              type="search"
-              ref={searchRef}
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button
-              onClick={searchHandler}
-              className="btn btn-outline-success"
-              type="submit"
-            >
-              Search
-            </button>
-          </form>
-
+          <Button
+            onClick={langButtonHandler}
+            text
+            severity="secondary"
+            label={langButtonText}
+            icon="pi pi-language"
+          />
+          <Button
+            onClick={searchClickHandler}
+            text
+            severity="secondary"
+            label={t("searchLabel")}
+            icon="pi pi-search"
+          />
           {auth.role ? (
             <button
               onClick={logoutButtonHandler}
               className="btn btn-outline-success ms-2"
               type="button"
             >
-              Logout
+              {t("logout")}
             </button>
           ) : null}
         </div>

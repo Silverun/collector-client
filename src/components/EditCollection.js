@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-// USE AXIOS PRIVATE HOOK INSTEAD OF REGULAR
-// import { axiosPrivate } from "../api/axios";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileEncode from "filepond-plugin-file-encode";
@@ -15,18 +13,17 @@ import useAuth from "../hooks/useAuth";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Spinner from "react-bootstrap/Spinner";
+import { useTranslation } from "react-i18next";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileEncode);
 
 const EditCollection = () => {
   const location = useLocation();
   const oldCollection = location.state.collection;
-
   const [files, setFiles] = useState();
   const [theme, setTheme] = useState(oldCollection.theme);
   const [extraFieldType, setExtraFieldType] = useState("text");
   const [extraFieldName, setExtraFieldName] = useState("");
-  // JSON parse was here
   const [extraFields, setExtraFields] = useState(oldCollection.extraFields);
   const [isLoading, setIsLoading] = useState(false);
   const { auth } = useAuth();
@@ -36,13 +33,11 @@ const EditCollection = () => {
   const navigate = useNavigate();
   const params = useParams();
   const axiosPrivate = useAxiosPrivate();
+  const { t } = useTranslation("editCol");
 
   useEffect(() => {
-    console.log("params", params);
-    console.log("location.state.collection", location.state.collection);
     nameRef.current.value = oldCollection.name;
     descRef.current.value = oldCollection.description;
-    console.log("PondRef ", filepondRef.current);
     if (oldCollection.imageUrl !== "../img/cltr_logo_100.png") {
       filepondRef.current.addFile(oldCollection.imageUrl);
     }
@@ -54,7 +49,6 @@ const EditCollection = () => {
       type: extraFieldType,
       id: Math.random().toFixed(3) * 1000,
     };
-    console.log(newField);
     setExtraFields((prev) => {
       return [...prev, newField];
     });
@@ -68,25 +62,20 @@ const EditCollection = () => {
   const formSubmitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    // console.log(extraFields);
     const formData = new FormData();
     formData.append("image", files?.file);
     formData.append("name", nameRef.current.value);
     formData.append("description", descRef.current.value);
     formData.append("theme", theme);
     formData.append("extraFields", JSON.stringify(extraFields));
-    // author id from params id instead of auth id (if admin creates collection)
-    // ID IS A STRING into INT field CHECK !!!
     formData.append("authorId", oldCollection.authorId);
     formData.append("collectionId", oldCollection.id);
-    console.log(formData.get("image"));
     try {
-      const response = await axiosPrivate.post("/collection/edit", formData, {
+      await axiosPrivate.post("/collection/edit", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.data);
       setIsLoading(false);
       navigate(`/user/${params.id}`, { replace: true });
     } catch (error) {
@@ -96,33 +85,30 @@ const EditCollection = () => {
   };
 
   const imgUpdateHandler = (files) => {
-    console.log("onupdatefiles ran ", files);
-    // console.log(filepondRef.current);
     setFiles(files[0]);
   };
 
   return (
     <div className="container-lg text-center">
-      <h5>Edit collection</h5>
+      <h5>{t("edit")}</h5>
       <form className="container needs-validation" onSubmit={formSubmitHandler}>
         <div className="row container">
           <div className="col-sm-4">
             <FilePond
               ref={filepondRef}
-              // files={oldCollection.imageUrl}
               allowFileEncode={true}
               onupdatefiles={imgUpdateHandler}
               credits={null}
               instantUpload={false}
               stylePanelLayout="compact"
-              name="files" /* sets the file input name, it's filepond by default */
+              name="files"
               labelIdle='Drag & Drop image here or <span class="filepond--label-action">Browse</span>'
             />
           </div>
           <div className="col-sm px-5 text-start">
             <div className="row my-3">
               <label htmlFor="collection_name" className="form-label">
-                Name
+                {t("name")}
               </label>
               <input
                 required
@@ -134,7 +120,7 @@ const EditCollection = () => {
             </div>
             <div className="row my-3">
               <label htmlFor="col_description" className="form-label">
-                Description
+                {t("desc")}
               </label>
               <textarea
                 required
@@ -145,6 +131,9 @@ const EditCollection = () => {
               />
             </div>
             <div className="row my-4">
+              <label htmlFor="col_description" className="form-label">
+                {t("choose")}
+              </label>
               <Form.Select
                 required
                 onChange={(e) => {
@@ -152,7 +141,6 @@ const EditCollection = () => {
                 }}
                 aria-label="Default select example"
               >
-                {/* <option value="">Choose theme</option> */}
                 <option value={oldCollection.theme}>
                   {oldCollection.theme}
                 </option>
@@ -163,9 +151,8 @@ const EditCollection = () => {
                 <option value="Classic Cars">Classic Cars</option>
               </Form.Select>
             </div>
-            {/* Extra fields */}
             <div className="row">
-              <h6 className="text-start mb-3">Extra fields</h6>
+              <h6 className="text-start mb-3">{t("extra")}</h6>
               <ListGroup className="mb-3">
                 {extraFields.map((field, i) => (
                   <ListGroup.Item key={field.id}>
@@ -196,7 +183,7 @@ const EditCollection = () => {
                   onChange={(e) => {
                     setExtraFieldName(e.target.value);
                   }}
-                  placeholder="Field name"
+                  placeholder={t("fieldName")}
                   aria-label="Field type input"
                 />
                 <FloatingLabel controlId="floatingSelect" label="Field type">
@@ -225,7 +212,7 @@ const EditCollection = () => {
           <Spinner animation="border" />
         ) : (
           <button type="submit" className="btn btn-primary mt-3">
-            Save changes
+            {t("save")}
           </button>
         )}
       </form>
