@@ -8,7 +8,6 @@ const useRefreshToken = () => {
     const result = await axios.get("/refresh");
     console.log("new access token from refresh", result.data);
     setAuth((prev) => {
-      console.log("Prev set Auth", prev);
       return {
         ...prev,
         id: result.data.id,
@@ -17,7 +16,7 @@ const useRefreshToken = () => {
         accessToken: result.data.accessToken,
       };
     });
-    console.log(auth.accessToken);
+    console.log("new auth accessToken after refresh", auth.accessToken);
     return result.data.accessToken;
   };
 
