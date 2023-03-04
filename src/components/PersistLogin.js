@@ -13,6 +13,7 @@ const PersistLogin = () => {
       console.log("verifyRefreshToken ran");
 
       try {
+        console.log("auth", auth);
         await refreshToken();
       } catch (error) {
         console.error(error);
