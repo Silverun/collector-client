@@ -11,7 +11,10 @@ const useAxiosPrivate = () => {
     const requestIntercept = axiosPrivate.interceptors.request.use(
       async (config) => {
         //Checking if we have access token in header
-        console.log("configheaderAuth", config.headers);
+        console.log(
+          "axios interceptor request - config.headers",
+          config.headers
+        );
         if (!config.headers["Authorization"]) {
           //if not setting it to one in state
           config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
