@@ -16,6 +16,7 @@ const Collections = () => {
 
   const getCollections = useCallback(async () => {
     try {
+      console.log(params.id);
       const response = await axiosPrivate.get(`/user/${params.id}`);
       setCollections(response.data.result);
     } catch (error) {
