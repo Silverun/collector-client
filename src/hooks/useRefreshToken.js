@@ -2,7 +2,7 @@ import axios from "../api/axios";
 import useAuth from "./useAuth";
 
 const useRefreshToken = () => {
-  const { setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
 
   const refreshToken = async () => {
     const result = await axios.get("/refresh");
@@ -17,7 +17,7 @@ const useRefreshToken = () => {
         accessToken: result.data.accessToken,
       };
     });
-
+    console.log(auth.accessToken);
     return result.data.accessToken;
   };
 
