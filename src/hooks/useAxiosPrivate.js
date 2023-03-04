@@ -15,9 +15,7 @@ const useAxiosPrivate = () => {
           //if not setting it to one in state
           config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
         }
-        config.params = {
-          userid: auth.id,
-        };
+
         return config;
       },
       (error) => Promise.reject(error)
