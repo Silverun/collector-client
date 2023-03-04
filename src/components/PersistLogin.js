@@ -10,7 +10,6 @@ const PersistLogin = () => {
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
-      console.log("verifyRefreshToken ran");
       try {
         await refreshToken();
       } catch (error) {
@@ -19,8 +18,6 @@ const PersistLogin = () => {
         setIsLoading(false);
       }
     };
-    console.log("Persist login ran");
-    console.log("!auth?.accessToken", !auth?.accessToken);
     !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false);
   }, []);
 

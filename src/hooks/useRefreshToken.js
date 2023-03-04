@@ -6,7 +6,6 @@ const useRefreshToken = () => {
 
   const refreshToken = async () => {
     const result = await axios.get("/refresh");
-    console.log("new access token from refresh", result.data);
     // was prev here
     setAuth({
       id: result.data.id,
