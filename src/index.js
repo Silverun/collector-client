@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "./custom.css";
 import App from "./App";
 import { AuthProvider } from "./context/AuthProvider";
 import { BrowserRouter } from "react-router-dom";
