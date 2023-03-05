@@ -91,8 +91,11 @@ const EditCollection = () => {
   return (
     <div className="container-lg text-center">
       <h5>{t("edit")}</h5>
-      <form className="container needs-validation" onSubmit={formSubmitHandler}>
-        <div className="row container">
+      <form
+        className="container my-3 needs-validation"
+        onSubmit={formSubmitHandler}
+      >
+        <div className="row gap-5 container">
           <div className="col-sm-4">
             <FilePond
               ref={filepondRef}
@@ -105,12 +108,13 @@ const EditCollection = () => {
               labelIdle='Drag & Drop image here or <span class="filepond--label-action">Browse</span>'
             />
           </div>
-          <div className="col-sm px-5 text-start">
-            <div className="row my-3">
-              <label htmlFor="collection_name" className="form-label">
+          <div className="col-sm text-start">
+            <div className="row mb-3">
+              <label htmlFor="collection_name" className="form-label p-0">
                 {t("name")}
               </label>
               <input
+                style={{ maxWidth: "35%" }}
                 required
                 ref={nameRef}
                 type="text"
@@ -119,10 +123,11 @@ const EditCollection = () => {
               />
             </div>
             <div className="row my-3">
-              <label htmlFor="col_description" className="form-label">
+              <label htmlFor="col_description" className="form-label p-0">
                 {t("desc")}
               </label>
               <textarea
+                rows="10"
                 required
                 ref={descRef}
                 type="text"
@@ -131,10 +136,11 @@ const EditCollection = () => {
               />
             </div>
             <div className="row my-4">
-              <label htmlFor="col_description" className="form-label">
+              <label htmlFor="col_description" className="form-label p-0">
                 {t("choose")}
               </label>
               <Form.Select
+                style={{ maxWidth: "25%" }}
                 required
                 onChange={(e) => {
                   setTheme(e.target.value);
@@ -152,7 +158,7 @@ const EditCollection = () => {
               </Form.Select>
             </div>
             <div className="row">
-              <h6 className="text-start mb-3">{t("extra")}</h6>
+              <h6 className="text-start p-0 mb-3">{t("extra")}</h6>
               <ListGroup className="mb-3">
                 {extraFields.map((field, i) => (
                   <ListGroup.Item key={field.id}>
@@ -177,7 +183,7 @@ const EditCollection = () => {
                   </ListGroup.Item>
                 ))}
               </ListGroup>
-              <InputGroup className="mb-3">
+              <InputGroup className="mb-3 p-0">
                 <Form.Control
                   value={extraFieldName}
                   onChange={(e) => {
@@ -186,7 +192,11 @@ const EditCollection = () => {
                   placeholder={t("fieldName")}
                   aria-label="Field type input"
                 />
-                <FloatingLabel controlId="floatingSelect" label="Field type">
+                <FloatingLabel
+                  style={{ maxWidth: 180 }}
+                  controlId="floatingSelect"
+                  label="Field type"
+                >
                   <Form.Select
                     onChange={(e) => {
                       setExtraFieldType(e.target.value);
@@ -205,16 +215,20 @@ const EditCollection = () => {
                   Add
                 </Button>
               </InputGroup>
+              {isLoading ? (
+                <Spinner animation="border" />
+              ) : (
+                <button
+                  style={{ maxWidth: 180 }}
+                  type="submit"
+                  className="btn btn-primary mt-3"
+                >
+                  {t("save")}
+                </button>
+              )}
             </div>
           </div>
         </div>
-        {isLoading ? (
-          <Spinner animation="border" />
-        ) : (
-          <button type="submit" className="btn btn-primary mt-3">
-            {t("save")}
-          </button>
-        )}
       </form>
     </div>
   );

@@ -65,7 +65,6 @@ const Navigation = () => {
 
   const toggleDarkModeHandler = (checked) => {
     checked ? setTheme("dark") : setTheme("light");
-    console.log(checked);
     setDarkMode(checked);
   };
 
