@@ -1,0 +1,144 @@
+:root {
+  --cltr-dark-bg-color-1: #212f45;
+  --cltr-dark-bg-color-2: #272640;
+  --cltr-dark-bg-color-3: #312244;
+  --cltr-dark-bg-color-4: #3e1f47;
+  --cltr-dark-bg-color-5: #4d194d;
+
+  --cltr-dark-sec-color-1: #006466;
+  --cltr-dark-sec-color-2: #065a60;
+  --cltr-dark-sec-color-3: #0b525b;
+  --cltr-dark-sec-color-4: #144552;
+  --cltr-dark-sec-color-5: #1b3a4b;
+
+  --cltr-dark-text: #d5dadf;
+  --cltr-dark-text-lighter: #ecf2f7;
+  --cltr-dark-text-subtle: #6c757d;
+}
+
+html[data-theme="dark"] {
+  --bs-body-bg: var(--cltr-dark-bg-color-1);
+  --bs-body-color: var(--cltr-dark-text);
+  --bs-btn-hover-bg: var(--cltr-dark-sec-color-4);
+}
+
+html[data-theme="dark"] .nav-link {
+  --bs-nav-link-color: var(--cltr-dark-text-subtle);
+  --bs-nav-link-hover-color: var(--cltr-dark-text-lighter);
+}
+
+html[data-theme="dark"] .nav-link .nav-link.active {
+  --bs-nav-link-color: var(--cltr-dark-text-subtle);
+  --bs-nav-link-hover-color: var(--cltr-dark-text-lighter);
+  --bs-navbar-active-color: var(--cltr-dark-text-subtle);
+}
+html[data-theme="dark"] .navbar-nav .nav-link.active {
+  color: #ecf2f7;
+}
+html[data-theme="dark"] .table {
+  border-color: #095a60;
+}
+
+html[data-theme="dark"] .list-group {
+  --bs-list-group-bg: rgba(51, 55, 84, 0.867);
+  --bs-list-group-color: var(--bs-body-color);
+  --bs-list-group-action-hover-bg: #34314b;
+  --bs-list-group-action-hover-color: --bs-body-color;
+}
+
+html[data-theme="dark"] .p-sidebar {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+html[data-theme="dark"] .p-tag {
+  background-color: #174978;
+  color: var(--bs-body-color);
+}
+html[data-theme="dark"] .btn-primary {
+  background-color: #174978;
+  border-color: #272640;
+}
+html[data-theme="dark"] .btn-primary:hover {
+  background-color: #1d5f9c;
+  border-color: #272640;
+}
+
+html[data-theme="dark"] .form-control {
+  background-color: var(--cltr-dark-text);
+  color: var(--cltr-dark-bg-color-2);
+}
+html[data-theme="dark"] .p-toolbar {
+  background-color: var(--cltr-dark-bg-color-3);
+  border-color: #065a60;
+}
+html[data-theme="dark"] .form-select {
+  background-color: var(--cltr-dark-text);
+  border-color: #065a60;
+}
+html[data-theme="dark"] .form-floating > label {
+  color: #0b525b;
+}
+html[data-theme="dark"] .p-panel .p-panel-header {
+  color: var(--cltr-dark-text);
+  background-color: var(--cltr-dark-text-subtle);
+  border-color: #212f45;
+}
+html[data-theme="dark"] .p-panel-content {
+  color: var(--cltr-dark-text);
+  background-color: var(--cltr-dark-sec-color-5);
+  border-color: #4d194d;
+}
+html[data-theme="dark"] .p-card {
+  color: #d5dadf;
+  background: var(--cltr-dark-sec-color-4);
+  border-color: #4d194d;
+}
+html[data-theme="dark"] .p-inputtext {
+  background: var(--cltr-dark-sec-color-4);
+  border-color: #4d194d;
+  color: var(--cltr-dark-text);
+}
+html[data-theme="dark"] .p-datatable-header {
+  background: var(--cltr-dark-sec-color-4);
+  border-color: #4d194d;
+  color: var(--cltr-dark-text);
+}
+
+html[data-theme="dark"] .p-datatable .p-datatable-thead > tr > th {
+  background: var(--cltr-dark-bg-color-2);
+  border-color: #4d194d;
+  color: var(--cltr-dark-text);
+}
+html[data-theme="dark"] .p-datatable-tbody > tr {
+  background: var(--cltr-dark-bg-color-2);
+  border-color: #4d194d;
+  color: var(--cltr-dark-text);
+}
+html[data-theme="dark"] .p-datatable-tbody > tr:hover {
+  background-color: #144552;
+}
+html[data-theme="dark"]
+  .p-datatable
+  .p-sortable-column:not(.p-highlight):not(.p-sortable-disabled):hover {
+  background-color: var(--cltr-dark-bg-color-5);
+  color: var(--cltr-dark-text);
+}
+html[data-theme="dark"] .p-datatable .p-datatable-tbody > tr > td {
+  border-color: #4d194d;
+}
+html[data-theme="dark"]
+  .p-datatable.p-datatable-hoverable-rows
+  .p-datatable-tbody
+  > tr:not(.p-highlight):not(.p-datatable-emptymessage):hover {
+  background-color: var(--cltr-dark-bg-color-5);
+  color: var(--cltr-dark-text);
+}
+
+body {
+  transition: background-color 500ms linear;
+}
+
+.list-group-flush {
+  border-radius: 10px;
+}

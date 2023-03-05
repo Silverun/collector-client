@@ -160,10 +160,7 @@ const SoloCollection = () => {
 
   const headerTemplate = () => {
     return (
-      <div
-        style={{ height: 18 }}
-        className="d-flex justify-content-end align-items-center"
-      >
+      <div className="d-flex justify-content-end align-items-center">
         <div className="d-flex">
           <label className="fw-light me-3" htmlFor="switch">
             {t("allowMarkdown")}
@@ -200,8 +197,8 @@ const SoloCollection = () => {
   if (!Loaded) return <div>Loading...</div>;
 
   return (
-    <div className="container">
-      <div className="row gap-2 align-items-center">
+    <div className="container-lg">
+      <div className="row gap-2 flex-wrap align-items-center">
         <div className="col-1">
           <img
             style={{ maxHeight: 80, maxWidth: 80 }}
@@ -209,7 +206,7 @@ const SoloCollection = () => {
             alt="col_img"
           />
         </div>
-        <div className="col me-3 text-start">
+        <div className="col-md-10 text-start">
           <h5>{collection.name}</h5>
         </div>
       </div>

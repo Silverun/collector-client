@@ -10,6 +10,8 @@ import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { useTranslation } from "react-i18next";
+import { DarkModeSwitch } from "react-toggle-dark-mode";
+import useTheme from "../hooks/useTheme";
 
 const Navigation = () => {
   const [hamButton, setHamButton] = useState(true);
@@ -20,6 +22,8 @@ const Navigation = () => {
   const [langButtonText, setLangButtonText] = useState(
     localStorage.getItem("i18nextLng") || "en-US"
   );
+  const { theme, setTheme } = useTheme();
+  const [isDarkMode, setDarkMode] = useState(theme === "light" ? false : true);
   const navigate = useNavigate();
   const logout = useLogout();
   const { auth } = useAuth();
@@ -57,6 +61,11 @@ const Navigation = () => {
     setVisible(true);
     const { data } = await axios.get("/item/getsearchitems");
     setSearchData(data);
+  };
+
+  const toggleDarkModeHandler = (checked) => {
+    checked ? setTheme("dark") : setTheme("light");
+    setDarkMode(checked);
   };
 
   const onInputChangeHandler = (e) => {
@@ -210,6 +219,13 @@ const Navigation = () => {
             severity="secondary"
             label={t("searchLabel")}
             icon="pi pi-search"
+          />
+          <DarkModeSwitch
+            className="mx-3"
+            checked={isDarkMode}
+            onChange={toggleDarkModeHandler}
+            size={25}
+            moonColor="#b6d4f2"
           />
           {auth.role ? (
             <button

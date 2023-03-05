@@ -151,7 +151,7 @@ const SoloItem = () => {
 
   return (
     <>
-      <Container fluid="md">
+      <Container fluid="sm">
         <Row>
           <Col>
             <h3>{curItem.name}</h3>
@@ -173,20 +173,24 @@ const SoloItem = () => {
             ))}
           </Col>
         </Row>
-        {curItem.fieldsData.map((field) => {
-          return (
-            <Panel
-              key={field.id}
-              toggleable
-              header={field.name}
-              className="mt-3"
-            >
-              {fieldData(field)}
-            </Panel>
-          );
-        })}
-        <Row className="my-3">
-          <Panel header={t("comments")} className="mt-3">
+        <Row className="mt-3">
+          {curItem.fieldsData.map((field) => {
+            return (
+              <Col key={field.id}>
+                <Panel
+                  key={field.id}
+                  toggleable
+                  header={field.name}
+                  className="mt-3"
+                >
+                  {fieldData(field)}
+                </Panel>
+              </Col>
+            );
+          })}
+        </Row>
+        <Row>
+          <Panel header={t("comments")} className="my-5">
             <div hidden={!isAllowed} className="p-inputgroup flex-1">
               <InputText
                 value={commentInput}
