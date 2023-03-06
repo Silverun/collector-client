@@ -29,7 +29,7 @@ const CheckStatus = () => {
 
   useEffect(() => {
     checkBlock();
-  }, [checkBlock]);
+  }, []);
 
   if (isLoading) {
     return (
