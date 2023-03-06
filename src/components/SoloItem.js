@@ -65,14 +65,20 @@ const SoloItem = () => {
     }
   }, [params.item_id]);
 
-  useEffect(() => {
-    getItem();
-    getItemLikes();
-    getItemComments();
-    setTimeout(() => {
+  const runAll = useCallback(async () => {
+    try {
+      await getItem();
+      await getItemLikes();
+      await getItemComments();
       setIsLoading(false);
-    }, 1000);
+    } catch (error) {
+      console.log(error);
+    }
   }, [getItem, getItemComments, getItemLikes]);
+
+  useEffect(() => {
+    runAll();
+  }, [runAll]);
 
   useEffect(() => {
     const interval = setInterval(() => getItemComments(), 5000);
@@ -146,7 +152,9 @@ const SoloItem = () => {
 
   if (isLoading)
     return (
-      <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem" }}></i>
+      <div className="container d-flex justify-content-center">
+        <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem" }}></i>
+      </div>
     );
 
   return (

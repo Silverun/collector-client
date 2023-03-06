@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import axios, { axiosPrivate } from "../api/axios";
+import axios from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
@@ -11,6 +11,7 @@ import { Button } from "primereact/button";
 import { InputSwitch } from "primereact/inputswitch";
 import useAuth from "../hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const SoloCollection = () => {
   const [collection, setCollection] = useState({});
@@ -26,6 +27,7 @@ const SoloCollection = () => {
   const dataTableRef = useRef(null);
   const params = useParams();
   const navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate();
 
   const getCollectionItems = useCallback(async () => {
     try {

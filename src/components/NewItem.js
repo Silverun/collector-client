@@ -146,12 +146,7 @@ const NewItem = () => {
           <Col sm={5}>
             <Form.Group controlId="validationCustom01">
               <Form.Label>{t("itemname")}</Form.Label>
-              <Form.Control
-                // style={{ maxWidth: "80%" }}
-                ref={itemNameRef}
-                required
-                type="text"
-              />
+              <Form.Control ref={itemNameRef} required type="text" />
             </Form.Group>
           </Col>
           <Col sm={5}>
@@ -176,7 +171,7 @@ const NewItem = () => {
             extraFields.map((field) => {
               if (field.type === "markdown") {
                 return (
-                  <Col sm={11}>
+                  <Col key={field.id * 5} sm={11}>
                     <Form.Group
                       className="mt-3"
                       key={field.id}
@@ -190,14 +185,13 @@ const NewItem = () => {
                         name={field.name}
                         placeholder={t("markdownsup")}
                         rows="8"
-                        // style={{ height: "100px" }}
                       />
                     </Form.Group>
                   </Col>
                 );
               } else if (field.type === "checkbox") {
                 return (
-                  <Col sm={5}>
+                  <Col key={field.id * 5} sm={5}>
                     <Form.Check
                       ref={(ref) => allFieldsRefs.push(ref)}
                       key={field.id}
@@ -211,7 +205,7 @@ const NewItem = () => {
                 );
               } else {
                 return (
-                  <Col sm={5}>
+                  <Col key={field.id * 5} sm={5}>
                     <Form.Group
                       itemRef={inputsRef}
                       className="mt-3"

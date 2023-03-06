@@ -204,7 +204,7 @@ const EditItem = () => {
             extraFields.map((field) => {
               if (field.type === "markdown") {
                 return (
-                  <Col sm={11}>
+                  <Col key={field.id * 5} sm={11}>
                     <Form.Group
                       className="mt-3"
                       key={field.id}
@@ -224,7 +224,7 @@ const EditItem = () => {
                 );
               } else if (field.type === "checkbox") {
                 return (
-                  <Col sm={5}>
+                  <Col key={field.id * 5} sm={5}>
                     <Form.Check
                       ref={(ref) => allFieldsRefs.push(ref)}
                       key={field.id}
@@ -238,7 +238,7 @@ const EditItem = () => {
                 );
               } else {
                 return (
-                  <Col sm={5}>
+                  <Col key={field.id * 5} sm={5}>
                     <Form.Group
                       itemRef={inputsRef}
                       className="mt-3"
