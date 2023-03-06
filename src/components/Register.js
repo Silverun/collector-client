@@ -13,21 +13,19 @@ export default function Register() {
 
   const regSubmitHandler = async (e) => {
     e.preventDefault();
-    await axios
-      .post("/user/register", {
+    try {
+      await axios.post("/user/register", {
         username: nameRef.current.value,
         email: emailRef.current.value,
         password: passwordRef.current.value,
-      })
-      .then(() => {
-        navigate("/");
-      })
-      .catch((err) => {
-        setMessage(err.response.data);
-        setTimeout(() => {
-          setMessage(null);
-        }, 2000);
       });
+      navigate("/");
+    } catch (error) {
+      setMessage(error.response.data);
+      setTimeout(() => {
+        setMessage(null);
+      }, 2000);
+    }
   };
 
   const alert = (

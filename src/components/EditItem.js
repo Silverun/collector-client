@@ -95,28 +95,18 @@ const EditItem = () => {
     });
   }, [isLoading]);
 
-  const onAddTag = useCallback(
-    (newTag) => {
-      const formattedTag = {
-        value:
-          newTag.value
-            .replaceAll(" ", "")
-            .toLowerCase()
-            .charAt(0)
-            .toUpperCase() +
-          newTag.value.replaceAll(" ", "").toLowerCase().substring(1),
-        label:
-          newTag.label
-            .replaceAll(" ", "")
-            .toLowerCase()
-            .charAt(0)
-            .toUpperCase() +
-          newTag.label.replaceAll(" ", "").toLowerCase().substring(1),
-      };
-      return setSelectedTags([...selectedTags, formattedTag]);
-    },
-    [selectedTags]
-  );
+  const onAddTag = useCallback((newTag) => {
+    const normalizeStr = (str) => {
+      const norm = str.toLowerCase().replaceAll(" ", "");
+      const result = norm.charAt(0).toUpperCase() + norm.substring(1);
+      return result;
+    };
+    const formattedTag = {
+      value: normalizeStr(newTag.value),
+      label: normalizeStr(newTag.value),
+    };
+    return setSelectedTags((prev) => [...prev, formattedTag]);
+  }, []);
 
   const onDeleteTag = useCallback(
     (tagIndex) => {

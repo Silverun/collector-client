@@ -21,55 +21,38 @@ const Admin = () => {
     getUsers();
   }, []);
 
-  const deleteUserHandler = useCallback(async () => {
-    const usersIds = selected.map((user) => user.id);
-    try {
-      await axiosPrivate.post("/admin/delete", usersIds);
-      await getUsers();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [axiosPrivate, getUsers, selected]);
+  const actionUserHandler = useCallback(
+    async (action) => {
+      const usersIds = selected.map((user) => user.id);
+      try {
+        await axiosPrivate.post(`/admin/${action}`, usersIds);
+        await getUsers();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [selected, axiosPrivate, getUsers]
+  );
 
-  const promoteUserHandler = useCallback(async () => {
-    const usersIds = selected.map((user) => user.id);
-    try {
-      await axiosPrivate.post("/admin/promote", usersIds);
-      await getUsers();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [selected, getUsers, axiosPrivate]);
+  const deleteUserHandler = async () => {
+    await actionUserHandler("delete");
+  };
 
-  const demoteUserHandler = useCallback(async () => {
-    const usersIds = selected.map((user) => user.id);
-    try {
-      await axiosPrivate.post("/admin/demote", usersIds);
-      await getUsers();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [selected, getUsers, axiosPrivate]);
+  const promoteUserHandler = async () => {
+    await actionUserHandler("promote");
+  };
 
-  const blockUserHandler = useCallback(async () => {
-    const usersIds = selected.map((user) => user.id);
-    try {
-      await axiosPrivate.post("/admin/block", usersIds);
-      await getUsers();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [selected, getUsers, axiosPrivate]);
+  const demoteUserHandler = async () => {
+    await actionUserHandler("demote");
+  };
 
-  const unblockUserHandler = useCallback(async () => {
-    const usersIds = selected.map((user) => user.id);
-    try {
-      await axiosPrivate.post("/admin/unblock", usersIds);
-      await getUsers();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [selected, getUsers, axiosPrivate]);
+  const blockUserHandler = async () => {
+    await actionUserHandler("block");
+  };
+
+  const unblockUserHandler = async () => {
+    await actionUserHandler("unblock");
+  };
 
   const leftToolbarTemplate = () => {
     return (

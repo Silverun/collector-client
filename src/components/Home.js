@@ -106,7 +106,6 @@ const Home = () => {
       </Sidebar>
       <div className="row text-center">
         <TagCloud
-          key={Math.random().toFixed(4) * 10000}
           minSize={12}
           maxSize={50}
           tags={tags}
