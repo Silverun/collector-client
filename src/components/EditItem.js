@@ -165,22 +165,24 @@ const EditItem = () => {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div className="container text-center">
-      <h5 className="mb-3">
+    <div className="container-sm">
+      <h5 className="mb-3 text-center">
         {t("head")}: {currentItem.name} - {collection.name}
       </h5>
       <Form onSubmit={formSubmitHandler}>
-        <Row className="sm-3 align-items-center">
-          <Form.Group as={Col} md="4" controlId="validationCustom01">
-            <Form.Label>{t("itemname")}</Form.Label>
-            <Form.Control
-              onChange={(e) => setItemNameInput(e.target.value)}
-              value={itemNameInput}
-              required
-              type="text"
-            />
-          </Form.Group>
-          <Col md="6">
+        <Row className="sm-3 align-items-center justify-content-around">
+          <Col sm={5}>
+            <Form.Group controlId="validationCustom01">
+              <Form.Label>{t("itemname")}</Form.Label>
+              <Form.Control
+                onChange={(e) => setItemNameInput(e.target.value)}
+                value={itemNameInput}
+                required
+                type="text"
+              />
+            </Form.Group>
+          </Col>
+          <Col sm={5}>
             <Form.Label>{t("choosetags")}</Form.Label>
             <ReactTags
               allowNew={true}
@@ -195,65 +197,73 @@ const EditItem = () => {
             />
           </Col>
         </Row>
-        <Row className="mb-3">
+        <Row className="sm-3 mb-3 align-items-center justify-content-around">
           {isLoading ? (
             <p>Loading...</p>
           ) : (
             extraFields.map((field) => {
               if (field.type === "markdown") {
                 return (
-                  <Form.Group
-                    className="mt-3"
-                    key={field.id}
-                    controlId={field.id}
-                  >
-                    <Form.Label>{field.name}</Form.Label>
-                    <Form.Control
-                      ref={(ref) => allFieldsRefs.push(ref)}
-                      as="textarea"
-                      required
-                      name={field.name}
-                      placeholder="Markdown is supported here!"
-                      style={{ height: "100px" }}
-                    />
-                  </Form.Group>
+                  <Col sm={11}>
+                    <Form.Group
+                      className="mt-3"
+                      key={field.id}
+                      controlId={field.id}
+                    >
+                      <Form.Label>{field.name}</Form.Label>
+                      <Form.Control
+                        rows={8}
+                        ref={(ref) => allFieldsRefs.push(ref)}
+                        as="textarea"
+                        required
+                        name={field.name}
+                        placeholder="Markdown is supported here!"
+                      />
+                    </Form.Group>
+                  </Col>
                 );
               } else if (field.type === "checkbox") {
                 return (
-                  <Form.Check
-                    ref={(ref) => allFieldsRefs.push(ref)}
-                    key={field.id}
-                    className="text-start mt-3"
-                    type={field.type}
-                    id={field.id}
-                    label={field.name}
-                    name={field.name}
-                  />
+                  <Col sm={5}>
+                    <Form.Check
+                      ref={(ref) => allFieldsRefs.push(ref)}
+                      key={field.id}
+                      className="mt-3"
+                      type={field.type}
+                      id={field.id}
+                      label={field.name}
+                      name={field.name}
+                    />
+                  </Col>
                 );
               } else {
                 return (
-                  <Form.Group
-                    itemRef={inputsRef}
-                    className="mt-3"
-                    key={field.id}
-                    controlId={field.id}
-                  >
-                    <Form.Label>{field.name}</Form.Label>
-                    <Form.Control
-                      name={field.name}
-                      ref={(ref) => allFieldsRefs.push(ref)}
-                      required
-                      type={field.type}
-                    />
-                  </Form.Group>
+                  <Col sm={5}>
+                    <Form.Group
+                      itemRef={inputsRef}
+                      className="mt-3"
+                      key={field.id}
+                      controlId={field.id}
+                    >
+                      <Form.Label>{field.name}</Form.Label>
+                      <Form.Control
+                        name={field.name}
+                        ref={(ref) => allFieldsRefs.push(ref)}
+                        required
+                        type={field.type}
+                      />
+                    </Form.Group>
+                  </Col>
                 );
               }
             })
           )}
         </Row>
-        <Button type="submit" variant="primary" className="mt-3">
-          {t("savechange")}
-        </Button>
+        <div className="container text-center">
+          <Button type="submit" variant="primary" className="mt-3">
+            {t("savechange")}
+          </Button>
+        </div>
       </Form>
     </div>
   );
