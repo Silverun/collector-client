@@ -23,7 +23,6 @@ const SoloItem = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [heartToggle, setHeartToggle] = useState(false);
   const [commentInput, setCommentInput] = useState("");
-  const [isAllowed, setIsAllowed] = useState(false);
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const { t } = useTranslation("soloItem");
@@ -32,12 +31,6 @@ const SoloItem = () => {
     try {
       const response = await axios.post(`item/${params.item_id}`);
       setCurrentItem(response.data);
-      const checkOwner = () => {
-        if (response.data.authorId === auth.id || auth.role === 2) {
-          setIsAllowed(true);
-        }
-      };
-      checkOwner();
     } catch (error) {
       console.log(error);
     }
