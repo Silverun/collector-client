@@ -160,7 +160,7 @@ const SoloCollection = () => {
 
   const headerTemplate = () => {
     return (
-      <div className="d-flex justify-content-end align-items-center">
+      <div className="d-flex justify-content-end gap-2 align-items-center">
         <div className="d-flex">
           <label className="fw-light me-3" htmlFor="switch">
             {t("allowMarkdown")}
