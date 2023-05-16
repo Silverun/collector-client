@@ -22,4 +22,4 @@ There are 3 roles - admins, users and viewers. Admins can alter site content as 
 - i18 for internalization
 - Minisearch for full text search
 
-[Link to deployed app]()
+[Link to deployed app](https://cltr.netlify.app/)
