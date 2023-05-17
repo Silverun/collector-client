@@ -24,4 +24,4 @@ Site features full text search for item names, item labels, comments and item fi
 - i18 for internalization
 - Minisearch for full text search
 
-[Link to deployed app](https://cltr.netlify.app/)
+[Link to deployed app](https://cltr.netlify.app/) (you might need to wait a bit and refresh for render server to spin up)
