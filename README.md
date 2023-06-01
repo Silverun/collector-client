@@ -4,6 +4,8 @@ This is a CRUD website that allows its users to create and manage collections of
 There are 3 roles - admins, users and viewers. Admins can alter site content as the owner of the content, as well as manage users - block, unblock, delete, promote to admin or demote. Users are the ones that are registered and can perform basic actions like creating content and so on. Viewers can only browse site content.</br>
 Site features full text search for item names, item labels, comments and item field like description. It also has multi-language support, dark mode.
 
+<b>Itransition Intern Final Project<b>
+
 <p>Showcase video:</p>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=CDKR5RtVoWE" target="_blank">
  <img src="http://img.youtube.com/vi/CDKR5RtVoWE/hqdefault.jpg" alt="Watch the video" width="240" height="180" border="10" />
